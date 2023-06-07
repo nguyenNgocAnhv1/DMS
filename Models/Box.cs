@@ -16,10 +16,10 @@ namespace App.Models
           public string? ShareCode { get; set; }
           [StringLength(255)]
           public string? Url{get; set; }
-          public bool? IsPublic{get; set; }
-          public int UserId { get; set; }
+          public bool IsPublic{get; set; }
+          public int? UserId { get; set; }
           [ForeignKey("UserId")]
-          public Account Account { get; set; }
+          public Account? Account { get; set; }
 
      }
 }

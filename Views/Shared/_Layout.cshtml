@@ -35,6 +35,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="Box" asp-controller="Box" asp-action="Index">Box</a>
+                        </li>
                     </ul>
                      @if(string.IsNullOrEmpty(user)){
                         <a class="me-3" asp-controller = "account" asp-action = "Login">Login</a>
