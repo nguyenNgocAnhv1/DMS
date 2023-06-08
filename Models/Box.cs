@@ -18,6 +18,7 @@ namespace App.Models
           public string? Url{get; set; }
           public bool IsPublic{get; set; }
           public int? UserId { get; set; }
+          public DateTime? DateCreated{get; set; }
           [ForeignKey("UserId")]
           public Account? Account { get; set; }
 

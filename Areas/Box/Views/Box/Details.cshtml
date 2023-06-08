@@ -1,60 +1,143 @@
+@using System.Globalization
+@using App.Models
+@using System.Collections
+
 @model App.Models.Box
 
 @{
     ViewData["Title"] = "Details";
+    List<App.Models.File> listFile = ViewBag.listFile as List<App.Models.File>;
+    List<Comment> comment = ViewBag.listComment as List<App.Models.Comment>;
+    int userNow = -1;
+    if(ViewBag.account != null){
+        Account  account = ViewBag.account as Account;
+         userNow = account.id;
+    }
 }
 
-<h1>Details</h1>
 
 <div>
-    <h4>Box</h4>
+    <h3>@Model.Title</h3>
+    <h4>@Model.DateCreated</h4>
+    <i>@Model.Account.Name</i>
+    <img height="50" src="/upload/avt/avtuser.jpg" alt="">
+    <br>
+    <a class="btn btn-warning" asp-area="Box" asp-controller="Box" asp-action="UpdateFile"
+        asp-route-id="@Model.id">Chinh sua file</a>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Content)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Content)
-        </dd>
-        <dt class = "col-sm-2">
+
+        @Html.Raw(Model.Content)
+        @* <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Pass)
-        </dt>
-        <dd class = "col-sm-10">
+            </dt>
+            <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Pass)
-        </dd>
-        <dt class = "col-sm-2">
+            </dd>
+            <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.ShareCode)
-        </dt>
-        <dd class = "col-sm-10">
+            </dt>
+            <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.ShareCode)
-        </dd>
-        <dt class = "col-sm-2">
+            </dd>
+            <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Url)
-        </dt>
-        <dd class = "col-sm-10">
+            </dt>
+            <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Url)
-        </dd>
-        <dt class = "col-sm-2">
+            </dd>
+            <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.IsPublic)
-        </dt>
-        <dd class = "col-sm-10">
+            </dt>
+            <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.IsPublic)
-        </dd>
-        <dt class = "col-sm-2">
+            </dd>
+            <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Account)
-        </dt>
-        <dd class = "col-sm-10">
+            </dt>
+            <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Account.username)
-        </dd>
+            </dd> *@
     </dl>
 </div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Date
+            </th>
+            <th>
+                Size
+            </th>
+            <th>Dowload</th>
+
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in listFile)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.DatePost</td>
+                <td>@item.Size</td>
+                <td>
+                    <a asp-area="Box" asp-controller="Box" asp-action="Download" asp-route-filename="@item.Name"
+                    asp-route-id="@Model.id">
+                        <i class="fa-solid fa-circle-down"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+<hr>
+<div class="">
+    <form asp-action="CreateComment" asp-route-boxId="@Model.id">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <textarea name="Content" class="form-control" id="comment"></textarea>
+            <span asp-validation-for="Content" class="text-danger"></span>
+        </div>
+        <br>
+        <div class="form-group">
+            <input type="submit" value="Bình luận" class="btn btn-primary   rounded-4 " />
+        </div>
+    </form>
+</div>
+<br>
+<div class="">
+    @foreach (var item in comment)
+    {
+        <div class="d-flex ">
+            <div class="flex-shrink-0 d-flex align-items-center flex-column  comment-img">
+                <img height="50" src="@item.Account.Img" alt="...">
+                @Html.Partial("_CommentAction",new ArrayList(){Model.id,item.Id, item.AccountId,userNow})
+            </div>
+            <div class="flex-grow-1 ms-3 detail-comment">
+                <h6>@item.Account.Name</h6>
+                <p>
+                    @Html.Raw(@item.Content)
+                </p>
+            </div>
+        </div>
+    }
+</div>
+
+
+
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+@{
+    var SummerNote = new App.Models.Summernote("comment", true);
+
+}
+<partial name="_Summernote" model="SummerNote" />

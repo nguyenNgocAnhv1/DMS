@@ -79,7 +79,10 @@ namespace app.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("IsPublic")
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsPublic")
                         .HasColumnType("bit");
 
                     b.Property<string>("Pass")
@@ -99,7 +102,7 @@ namespace app.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("id");
@@ -181,8 +184,8 @@ namespace app.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<float>("Size")
-                        .HasColumnType("real");
+                    b.Property<decimal>("Size")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("id");
 
@@ -257,9 +260,7 @@ namespace app.Migrations
                 {
                     b.HasOne("App.Models.Account", "Account")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Account");
                 });

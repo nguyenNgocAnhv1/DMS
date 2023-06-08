@@ -60,6 +60,7 @@ namespace App.Controllers
                {
                     SHA256 hashMethod = SHA256.Create();
                     model.password = App.Util.GetHash(hashMethod, model.password);
+                    model.Img = "/upload/avt/avtuser.jpg";
                     _context.Add(model);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Login));

@@ -9,7 +9,8 @@ namespace App.Models
           public int id { get; set; }
           [StringLength(255)]
           public string Name { get; set; }
-          public float Size { get; set; }
+          [Column(TypeName = "decimal(18,1)")]
+          public double Size { get; set; }
           public DateTime DatePost { get; set; }
           public int BoxId { get; set; }
           [ForeignKey("BoxId")]

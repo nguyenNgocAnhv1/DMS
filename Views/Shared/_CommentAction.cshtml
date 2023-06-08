@@ -1,0 +1,27 @@
+@using System.Collections
+@model ArrayList
+@using Microsoft.AspNetCore.Authorization
+
+@{
+     var result = false;
+     
+     if (Convert.ToInt32(Model[2]) == Convert.ToInt32(Model[3]))
+     {
+          result = true;
+
+     }
+ 
+
+     @if (result)
+     {
+          <div class="flex-shrink-0 d-flex align-items-center flex-column  ">
+               <p class="mt-2">
+                    <a asp-action="DeleteComment" asp-controller="Box" asp-area="Box" asp-route-commentId="@Model[1]"
+               asp-route-boxId="@Model[0]">
+                         <i class="fa-solid fa-trash-can-arrow-up"></i>
+                    </a>
+               </p>
+          </div>
+
+     }
+}

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using app.Models;
 using App.Models;
+using System.IO;
 
 namespace app.Controllers;
 
@@ -21,6 +22,9 @@ public class HomeController : Controller
 
      public IActionResult Privacy()
      {
+          // create folder
+          string path = Path.Combine(Directory.GetCurrentDirectory(), "upload");
+          Directory.CreateDirectory(path);
           // Get files from the server
           var model = new FilesViewModel();
           foreach (var item in Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), "upload")))
@@ -37,8 +41,11 @@ public class HomeController : Controller
           // Iterate each files
           foreach (var file in files)
           {
+
+
                // Get the file name from the browser
                var fileName = System.IO.Path.GetFileName(file.FileName);
+
                // Get file path to be uploaded
                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "upload", fileName);
 

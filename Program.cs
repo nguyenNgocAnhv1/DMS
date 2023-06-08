@@ -1,5 +1,6 @@
 using App.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,7 +39,16 @@ app.UseCors("AllowAnyCorsPolicy");
 // khai bao su dung session
 app.UseSession();
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions()
+{
+     FileProvider = new PhysicalFileProvider(Path.Combine(
+          Directory.GetCurrentDirectory(), "Upload"
+     )),
+      RequestPath = "/Upload"
+    
+});
 
 app.UseRouting();
 
