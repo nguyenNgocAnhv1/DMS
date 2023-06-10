@@ -9,85 +9,93 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = app
 build_property.RootNamespace = app
-build_property.ProjectDir = D:\ThucTap_BTT\DMS\Code\DMS\
+build_property.ProjectDir = D:\ThucTap_BTT\DMS\DMS_Code\
 build_property.RazorLangVersion = 7.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = D:\ThucTap_BTT\DMS\Code\DMS
+build_property.MSBuildProjectDirectory = D:\ThucTap_BTT\DMS\DMS_Code
 build_property._RazorSourceGeneratorDebug = 
 
-[D:/ThucTap_BTT/DMS/Code/DMS/Areas/Box/Views/Box/Create.cshtml]
+[D:/ThucTap_BTT/DMS/DMS_Code/Areas/Box/Views/Box/CheckPass.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQm94XFZpZXdzXEJveFxDaGVja1Bhc3MuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/ThucTap_BTT/DMS/DMS_Code/Areas/Box/Views/Box/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQm94XFZpZXdzXEJveFxDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/ThucTap_BTT/DMS/Code/DMS/Areas/Box/Views/Box/Delete.cshtml]
+[D:/ThucTap_BTT/DMS/DMS_Code/Areas/Box/Views/Box/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQm94XFZpZXdzXEJveFxEZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/ThucTap_BTT/DMS/Code/DMS/Areas/Box/Views/Box/Details.cshtml]
+[D:/ThucTap_BTT/DMS/DMS_Code/Areas/Box/Views/Box/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQm94XFZpZXdzXEJveFxEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/ThucTap_BTT/DMS/Code/DMS/Areas/Box/Views/Box/Edit.cshtml]
+[D:/ThucTap_BTT/DMS/DMS_Code/Areas/Box/Views/Box/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQm94XFZpZXdzXEJveFxFZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/ThucTap_BTT/DMS/Code/DMS/Areas/Box/Views/Box/Index.cshtml]
+[D:/ThucTap_BTT/DMS/DMS_Code/Areas/Box/Views/Box/Hided.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQm94XFZpZXdzXEJveFxIaWRlZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/ThucTap_BTT/DMS/DMS_Code/Areas/Box/Views/Box/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQm94XFZpZXdzXEJveFxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/ThucTap_BTT/DMS/Code/DMS/Areas/Box/Views/Box/UpdateFile.cshtml]
+[D:/ThucTap_BTT/DMS/DMS_Code/Areas/Box/Views/Box/UpdateFile.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQm94XFZpZXdzXEJveFxVcGRhdGVGaWxlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/ThucTap_BTT/DMS/Code/DMS/Areas/Box/Views/_ViewImports.cshtml]
+[D:/ThucTap_BTT/DMS/DMS_Code/Areas/Box/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQm94XFZpZXdzXF9WaWV3SW1wb3J0cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/ThucTap_BTT/DMS/Code/DMS/Areas/Box/Views/_ViewStart.cshtml]
+[D:/ThucTap_BTT/DMS/DMS_Code/Areas/Box/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQm94XFZpZXdzXF9WaWV3U3RhcnQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/ThucTap_BTT/DMS/Code/DMS/Views/Account/Login.cshtml]
+[D:/ThucTap_BTT/DMS/DMS_Code/Views/Account/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/ThucTap_BTT/DMS/Code/DMS/Views/Account/Register.cshtml]
+[D:/ThucTap_BTT/DMS/DMS_Code/Views/Account/Register.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/ThucTap_BTT/DMS/Code/DMS/Views/Home/Index.cshtml]
+[D:/ThucTap_BTT/DMS/DMS_Code/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/ThucTap_BTT/DMS/Code/DMS/Views/Home/Privacy.cshtml]
+[D:/ThucTap_BTT/DMS/DMS_Code/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/ThucTap_BTT/DMS/Code/DMS/Views/Shared/Error.cshtml]
+[D:/ThucTap_BTT/DMS/DMS_Code/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/ThucTap_BTT/DMS/Code/DMS/Views/Shared/_CommentAction.cshtml]
+[D:/ThucTap_BTT/DMS/DMS_Code/Views/Shared/_CommentAction.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Db21tZW50QWN0aW9uLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/ThucTap_BTT/DMS/Code/DMS/Views/Shared/_Summernote.cshtml]
+[D:/ThucTap_BTT/DMS/DMS_Code/Views/Shared/_Summernote.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9TdW1tZXJub3RlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/ThucTap_BTT/DMS/Code/DMS/Views/Shared/_ValidationScriptsPartial.cshtml]
+[D:/ThucTap_BTT/DMS/DMS_Code/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/ThucTap_BTT/DMS/Code/DMS/Views/_ViewImports.cshtml]
+[D:/ThucTap_BTT/DMS/DMS_Code/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/ThucTap_BTT/DMS/Code/DMS/Views/_ViewStart.cshtml]
+[D:/ThucTap_BTT/DMS/DMS_Code/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/ThucTap_BTT/DMS/Code/DMS/Views/Shared/_Layout.cshtml]
+[D:/ThucTap_BTT/DMS/DMS_Code/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-uwi58k5n9p

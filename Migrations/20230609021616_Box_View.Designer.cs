@@ -4,6 +4,7 @@ using App.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace app.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230609021616_Box_View")]
+    partial class Box_View
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,6 +32,9 @@ namespace app.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<DateTime?>("BanDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool?>("BanEnabled")
                         .HasColumnType("bit");
@@ -80,8 +86,7 @@ namespace app.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsPublic")
-                        .HasColumnType("bit")
-                        .HasColumnName("IsAvaliable");
+                        .HasColumnType("bit");
 
                     b.Property<string>("Pass")
                         .HasMaxLength(255)
@@ -122,17 +127,16 @@ namespace app.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<int>("BoxId")
-                        .HasMaxLength(2147483647)
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("ListName")
+                        .IsRequired()
+                        .HasMaxLength(2147483647)
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
 
                     b.HasIndex("BoxId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("BoxShares");
                 });
@@ -188,9 +192,6 @@ namespace app.Migrations
 
                     b.Property<decimal>("Size")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("View")
-                        .HasColumnType("int");
 
                     b.HasKey("id");
 
@@ -278,15 +279,7 @@ namespace app.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("App.Models.Account", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Box");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("App.Models.Comment", b =>

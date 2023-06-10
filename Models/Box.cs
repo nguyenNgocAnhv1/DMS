@@ -16,6 +16,8 @@ namespace App.Models
           public string? ShareCode { get; set; }
           [StringLength(255)]
           public string? Url{get; set; }
+          public int? View { get; set; }
+          [Column(name: "IsAvaliable")]
           public bool IsPublic{get; set; }
           public int? UserId { get; set; }
           public DateTime? DateCreated{get; set; }

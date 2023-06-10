@@ -22,7 +22,7 @@ namespace App.Models
           public string? Img { get; set; }
           [StringLength(255)]
           public string? Description { get; set; }
-          public DateTime? BanDate { get; set; }
+          // public DateTime? BanDate { get; set; }
           public bool? BanEnabled { get; set; }
 
 

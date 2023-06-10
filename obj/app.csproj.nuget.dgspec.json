@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\ThucTap_BTT\\DMS\\Code\\DMS\\app.csproj": {}
+    "D:\\ThucTap_BTT\\DMS\\DMS_Code\\app.csproj": {}
   },
   "projects": {
-    "D:\\ThucTap_BTT\\DMS\\Code\\DMS\\app.csproj": {
+    "D:\\ThucTap_BTT\\DMS\\DMS_Code\\app.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\ThucTap_BTT\\DMS\\Code\\DMS\\app.csproj",
+        "projectUniqueName": "D:\\ThucTap_BTT\\DMS\\DMS_Code\\app.csproj",
         "projectName": "app",
-        "projectPath": "D:\\ThucTap_BTT\\DMS\\Code\\DMS\\app.csproj",
+        "projectPath": "D:\\ThucTap_BTT\\DMS\\DMS_Code\\app.csproj",
         "packagesPath": "C:\\Users\\ngocanh\\.nuget\\packages\\",
-        "outputPath": "D:\\ThucTap_BTT\\DMS\\Code\\DMS\\obj\\",
+        "outputPath": "D:\\ThucTap_BTT\\DMS\\DMS_Code\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

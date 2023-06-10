@@ -39,29 +39,69 @@ namespace App.Controllers.Boxs
 
           // GET: Box/Details/5
           [HttpGet]
-          public async Task<IActionResult> Details(int? id)
+          public async Task<IActionResult> Details(int? id, string? pass)
           {
+               var box = await _context.Boxs
+                   .Include(b => b.Account)
+                   .FirstOrDefaultAsync(m => m.id == id);
+               var acc = await _context.Accounts.FirstOrDefaultAsync(a => a.username == CurrentUser);
                if (id == null || _context.Boxs == null)
                {
                     return NotFound();
                }
+               if(box.IsPublic != true){
+                    return RedirectToAction("Hided");
+               }
 
-               var box = await _context.Boxs
-                   .Include(b => b.Account)
-                   .FirstOrDefaultAsync(m => m.id == id);
-
+               
+               if (!string.IsNullOrEmpty(box.Pass))
+               {
+                  
+                    if (pass != box.Pass)
+                    {
+                         return RedirectToAction("CheckPass", new { id = id});
+                    }
+               }
+               box.View = box.View + 1;
+               _context.Update(box);
+               await _context.SaveChangesAsync();
                ViewBag.listFile = await _context.Files.Where(f => f.BoxId == id).ToListAsync();
                ViewBag.listComment = await _context.Comments.Include(c => c.Account).Where(c => c.BoxId == id).ToListAsync();
-               ViewBag.Account = await _context.Accounts.FirstOrDefaultAsync(a => a.username == CurrentUser);
-
+               ViewBag.Account = acc;
+               var voteStatus = await _context.Votes.FirstOrDefaultAsync(v => v.BoxId == box.id && v.AccountId == acc.id);
+               if (voteStatus != null)
+               {
+                    ViewBag.voteStatus = voteStatus.Status;
+               }
+               else
+               {
+                    ViewBag.voteStatus = 100;
+               }
                if (box == null)
                {
                     return NotFound();
                }
+               var up = _context.Votes.Where(v => v.BoxId == box.id && v.Status == 1).Count();
+               var down = _context.Votes.Where(v => v.BoxId == box.id && v.Status == -1).Count();
+               ViewBag.vote = up - down;
 
                return View(box);
           }
+          [HttpGet]
+          public IActionResult CheckPass(int id)
+          {
+               ViewBag.id = id;
+               return View();
+          }
+          [HttpPost]
+          public IActionResult CheckPass(int id,string pass)
+          {
 
+               return RedirectToAction("Details", new {id = id, pass = pass});
+          }
+          public IActionResult Hided(){
+               return View();
+          }
           // GET: Box/Create
           public IActionResult Create()
           {
@@ -79,6 +119,7 @@ namespace App.Controllers.Boxs
                box.UserId = _context.Accounts.FirstOrDefault(a => a.username == _user).id;
                box.Url = agc.GenerateSlug(box.Title) + "_" + CodeRandom(6);
                box.DateCreated = DateTime.Now;
+               box.View = 0;
                if (ModelState.IsValid)
                {
                     _context.Add(box);
@@ -240,9 +281,8 @@ namespace App.Controllers.Boxs
                          DatePost = DateTime.Now,
                          Size = (file.Length / 1024.0) / 1024.0,
                          BoxId = id,
+                         View = 0,
                     };
-                    // double rs = 
-                    // agc.a((((file.Length / 1024.0))).ToString());
                     _context.Add(fileSql);
                }
                await _context.SaveChangesAsync();
@@ -258,6 +298,10 @@ namespace App.Controllers.Boxs
                     return Content("filename is not availble");
                var box = await _context.Boxs
                                               .FirstOrDefaultAsync(m => m.id == id);
+               var file = await _context.Files.Include(c => c.Box).FirstOrDefaultAsync(f => f.Name == filename && f.Box.id == id);
+               file.View = file.View + 1;
+               _context.Update(file);
+               await _context.SaveChangesAsync();
                var path = Path.Combine(Directory.GetCurrentDirectory(), "upload", box.Url, filename);
 
                var memory = new MemoryStream();
@@ -304,7 +348,7 @@ namespace App.Controllers.Boxs
                return Json(new { kq = kq });
           }
           [HttpPost]
-          public async Task<IActionResult> CreateComment(int boxId,string content)
+          public async Task<IActionResult> CreateComment(int boxId, string content)
           {
 
                // var box = await _context.Boxs
@@ -322,11 +366,57 @@ namespace App.Controllers.Boxs
                await _context.SaveChangesAsync();
                return RedirectToAction("Details", new { id = boxId });
           }
-          public async Task<IActionResult> DeleteComment(int commentId, int boxId){
-               var comment = await _context.Comments.FirstOrDefaultAsync( c => c.Id == commentId);
+          public async Task<IActionResult> DeleteComment(int commentId, int boxId)
+          {
+               var comment = await _context.Comments.FirstOrDefaultAsync(c => c.Id == commentId);
                _context.Comments.Remove(comment);
                await _context.SaveChangesAsync();
-               return RedirectToAction("Details", new {id = boxId});
+               return RedirectToAction("Details", new { id = boxId });
+          }
+          [HttpGet]
+          public async Task<IActionResult> VoteChange(int boxId, int act)
+          {
+               if (string.IsNullOrEmpty(CurrentUser))
+               {
+                    agc.a("loi");
+               }
+               var authorId = await _context.Accounts.FirstOrDefaultAsync(a => a.username == CurrentUser);
+               var vote = await _context.Votes.FirstOrDefaultAsync(v => v.AccountId == authorId.id && v.BoxId == boxId);
+               if (vote == null)
+               {
+                    var newVote = new Vote()
+                    {
+                         BoxId = boxId,
+                         AccountId = authorId.id,
+                         DateCreated = DateTime.Now,
+                         Status = act
+                    };
+                    _context.Add(newVote);
+                    await _context.SaveChangesAsync();
+               }
+               else
+               {
+                    if (vote.Status != act)
+                    {
+                         vote.Status = act;
+                         await _context.SaveChangesAsync();
+
+                    }
+                    else
+                    {
+                         vote.Status = 0;
+                         act = 0;
+                         await _context.SaveChangesAsync();
+
+                    }
+
+
+               }
+               var up = _context.Votes.Where(v => v.BoxId == boxId && v.Status == 1).Count();
+               var down = _context.Votes.Where(v => v.BoxId == boxId && v.Status == -1).Count();
+               var kq = up - down;
+               return Json(new { kq = kq, act = act });
+
           }
           public string CodeRandom(int x)
           {

@@ -9,18 +9,43 @@
     List<App.Models.File> listFile = ViewBag.listFile as List<App.Models.File>;
     List<Comment> comment = ViewBag.listComment as List<App.Models.Comment>;
     int userNow = -1;
-    if(ViewBag.account != null){
-        Account  account = ViewBag.account as Account;
-         userNow = account.id;
+    if (ViewBag.account != null)
+    {
+        Account account = ViewBag.account as Account;
+        userNow = account.id;
     }
+
 }
 
 
 <div>
     <h3>@Model.Title</h3>
     <h4>@Model.DateCreated</h4>
-    <i>@Model.Account.Name</i>
     <img height="50" src="/upload/avt/avtuser.jpg" alt="">
+
+    <i>@Model.Account.Name</i>
+    <br>
+    <i>View: @Model.View</i>
+    <div class="d-flex align-items-center ms-2 " style="font-size: 30px; color:#8d969f ;">
+        <p class="up-down  m-0 up  @Model.id" id="up">
+            <a>
+                <i class="fa-solid fa-caret-up"></i>
+            </a>
+
+        </p>
+        <p class="m-0 score text-center @Model.id "
+            style="line-height: 0; font-size: 20px; font-weight: bold; padding: 0 5px;color: #212529" id="@Model.id">
+
+        </p>
+        <p id="vote">
+            @ViewBag.vote
+        </p>
+        <p class="up-down m-0 down  @Model.id" id="down">
+            <a>
+                <i class="fa-solid fa-caret-up fa-rotate-180"></i>
+            </a>
+        </p>
+    </div>
     <br>
     <a class="btn btn-warning" asp-area="Box" asp-controller="Box" asp-action="UpdateFile"
         asp-route-id="@Model.id">Chinh sua file</a>
@@ -72,6 +97,8 @@
             <th>
                 Size
             </th>
+            <th>Views</th>
+
             <th>Dowload</th>
 
         </tr>
@@ -85,6 +112,7 @@
                 <td>@item.Name</td>
                 <td>@item.DatePost</td>
                 <td>@item.Size</td>
+                <td>@item.View</td>
                 <td>
                     <a asp-area="Box" asp-controller="Box" asp-action="Download" asp-route-filename="@item.Name"
                     asp-route-id="@Model.id">
@@ -141,3 +169,60 @@
 
 }
 <partial name="_Summernote" model="SummerNote" />
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        $(".up").click(function (e) {
+            var idpost = @Model.id
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("VoteChange","Box")",
+                    data: { "boxId": idpost, "act": 1 },
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        checkVoteStatus(data.act)
+                        $("#" + "vote").text("" + data.kq)
+                    }, error: function () {
+                        alert("Hãy đăng nhập")
+                    }
+                })
+        })
+        $(".down").click(function (e) {
+
+            var idpost = @Model.id
+                $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("VoteChange","Box")",
+                    data: { "boxId": idpost, "act": -1 },
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        checkVoteStatus(data.act)
+                        $("#" + "vote").text("" + data.kq)
+                    }, error: function () {
+                        alert("Hãy đăng nhập")
+                    }
+                })
+        })
+        function checkVoteStatus(act) {
+            if (act == 1) {
+                $("#up").attr('style', 'color: #0d6efd !important');
+                $("#down").attr('style', 'color: #8d969f !important')
+            }
+            if (act == -1) {
+                $("#up").attr('style', 'color: #8d969f !important')
+                $("#down").attr('style', 'color: #0d6efd !important');
+            }
+            if (act == 0) {
+                $("#up").attr('style', 'color: #8d969f !important')
+                $("#down").attr('style', 'color: #8d969f !important')
+            }
+        }
+        if (@ViewBag.voteStatus == 1) {
+            $("#up").attr('style', 'color: #0d6efd !important');
+        }
+        if (@ViewBag.voteStatus == -1) {
+            $("#down").attr('style', 'color: #0d6efd !important');
+        }
+    });  
+</script>

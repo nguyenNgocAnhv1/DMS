@@ -8,9 +8,12 @@ namespace App.Models
           [Key]
           public int id { get; set; }
           [StringLength(int.MaxValue)]
-          public string ListName { get; set; }
+          // public string ListName { get; set; }
           public int BoxId { get; set; }
           [ForeignKey("BoxId")]
           public Box Box { get; set; }
+          public int UserId { get; set; }
+          [ForeignKey("UserId")]
+          public Account User { get; set; }
      }
 }

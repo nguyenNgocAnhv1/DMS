@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Pco6EuAjxCGI/mPcQT/YpEtP8yUtVRBU8s8J/yxJcvJmBpHKNxbPyvDdGCvsEORDAM9W7OEi1480b5vJ/n1r3g==",
+  "dgSpecHash": "XciJgjde/unrH16MKhEMekFU7WXgSdq7vPv+K/l/veOoTpnFAwHtujJyPp4n3V56JyFTZTXS9BKNM3aYC605Hw==",
   "success": true,
-  "projectFilePath": "D:\\ThucTap_BTT\\DMS\\Code\\DMS\\app.csproj",
+  "projectFilePath": "D:\\ThucTap_BTT\\DMS\\DMS_Code\\app.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ngocanh\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\ngocanh\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
