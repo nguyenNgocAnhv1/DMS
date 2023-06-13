@@ -23,7 +23,7 @@
     <h4>@Model.DateCreated</h4>
     <img height="50" src="/upload/avt/avtuser.jpg" alt="">
 
-    <i>@Model.Account.Name</i>
+      <a asp-area="Box" asp-controller="User" asp-action="Detail" asp-route-id="@userNow"><i>@Model.Account.Name</i></a>
     <br>
     <i>View: @Model.View</i>
     <div class="d-flex align-items-center ms-2 " style="font-size: 30px; color:#8d969f ;">
@@ -144,11 +144,11 @@
     {
         <div class="d-flex ">
             <div class="flex-shrink-0 d-flex align-items-center flex-column  comment-img">
-                <img height="50" src="@item.Account.Img" alt="...">
+                <img height="50" src="/upload/avt/@item.Account.Img" alt="...">
                 @Html.Partial("_CommentAction",new ArrayList(){Model.id,item.Id, item.AccountId,userNow})
             </div>
             <div class="flex-grow-1 ms-3 detail-comment">
-                <h6>@item.Account.Name</h6>
+                  <a asp-area="Box" asp-controller="User" asp-action="Detail" asp-route-id="@userNow"><h6>@item.Account.Name</h6></a>
                 <p>
                     @Html.Raw(@item.Content)
                 </p>

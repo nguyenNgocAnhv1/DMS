@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Edit";
+    var listFile = ViewBag.listFile as List<App.Models.File>;
 }
 
 <h1>Edit</h1>
@@ -10,9 +11,9 @@
 <hr />
 <div class="row">
     <div class="col-md-10">
-        <form asp-action="Edit">
-           <div asp-validation-summary="All" class="text-danger"></div>
-                       <input type="hidden" asp-for="id" /> 
+        <form asp-action="Edit" asp-route-id="@Model.id" enctype="multipart/form-data">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input type="hidden" asp-for="id" />
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
@@ -20,7 +21,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Content" class="control-label"></label>
-                <textarea asp-for="Content"  id="Content" ></textarea>
+                <textarea asp-for="Content" id="Content"></textarea>
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -31,7 +32,7 @@
             <div class="form-group">
                 <label asp-for="ShareCode" class="control-label"></label>
                 <input type="button" value="Tao" id="generator">
-                <input asp-for="ShareCode" id="kq"  class="form-control d-none" />
+                <input asp-for="ShareCode" id="kq" class="form-control d-none" />
                 <span asp-validation-for="ShareCode" class="kq">@Model.ShareCode</span>
             </div>
             <div class="form-group d-none">
@@ -44,48 +45,276 @@
                     <input class="form-check-input" asp-for="IsPublic" /> @Html.DisplayNameFor(model => model.IsPublic)
                 </label>
             </div>
+            <h5>Chinh sua anh dai dien cuoc hop</h5>
+            <div class="input-group mb-3">
+                <img src="/upload/@Model.Url/@Model.Img" height="50" alt="">
+                <input type="file" class="form-control" id="file" name="file">
+                 <input asp-for="Img"  id="kq" class="form-control d-none">
+                @* <input type="submit" value="Save" class="btn btn-primary" /> *@
+            </div>
             <div class="form-group d-none">
                 <label asp-for="UserId" class="control-label"></label>
-                <select asp-for="UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
+                <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
             </div>
-            <div class="form-group">
+            <div class="">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" id="input-user" placeholder="Nhap user can chia se">
+                    <button class="btn btn-outline-secondary" type="button" id="searchUser">Tim kiem</button>
+                </div>
+                <div class="dsUser">
+                    <ul class="list-user">
+                        <p class="name"></p>
+                        <p class="username"></p>
+                        <img height="50" src="" alt="" class="img">
+                        <p class="share-satus" id="-1"></p>
+                    </ul>
+                </div>
+            </div>
+            <div class="">
+                <h6>Danh sach nguoi duoc chia se</h6>
+                <ul class="list-share">
+
+                </ul>
+
+            </div>
+            <div class="input-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
+    </div>
+</div>
+<div class="">
+    <h5>Chỉnh sửa nội file </h5>
+    <form method="post" enctype="multipart/form-data">
+        <div class="input-group mb-3">
+            <input type="file" class="form-control" id="files" name="files" multiple>
+            <button asp-action="UpdateFile" asp-route-id="@Model.id" class="input-group-text" type="submit">Tai
+                len</button>
+
+        </div>
+    </form>
+    <div class="">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Date
+                    </th>
+                    <th>
+                        Size
+                    </th>
+                    <th>
+                        Dowload
+                    </th>
+                    <th>
+                        Delete
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in listFile)
+                {
+                    <tr>
+
+                        <td class="name" id="@item.Name">@item.Name</td>
+                        <td>@item.DatePost</td>
+                        <td>@item.Size</td>
+                        <td>
+                            <a asp-area="Box" asp-controller="Box" asp-action="Download" asp-route-filename="@item.Name"
+                            asp-route-id="@Model.id">
+                                <i class="fa-solid fa-circle-down"></i>
+                            </a>
+                        </td>
+                        <td class="delete" id="@item.id" name="@item.Name">
+
+                            <i class="fa-solid fa-trash-can"></i>
+
+                        </td>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
     </div>
 </div>
 
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
-
+@* <form asp-action="UpdateFile" method="post" enctype="multipart/form-data">
+    <div class="input-group mb-3">
+    <input type="file" class="form-control" id="files" name="files" multiple>
+    </div>
+    </form> *@
 <script>
-     $(document).ready(function () {
-          //     console.log(x);
+    $(document).ready(function () {
+        //     console.log(x);
 
-          $("#generator").click(function () {
-               $.ajax({
+        $("#generator").click(function () {
+            $.ajax({
+                type: "GET",
+                // url: "http://localhost:5122/hcn/hcn",
+                url: "@Url.Action("ShareCode","Box")",
+                contentType: "application/json; charset = utf-8",
+                success: function (data) {
+                    $("#kq").val(data.kq);
+                    $(".kq").html(data.kq);
+
+                    // $(".y").html(data.dientich);
+
+                    // $("#ketqua").html(JSON.stringify(data));
+                },
+                error: function () {
+                    alert("error");
+                },
+            });
+        })
+        $("#searchUser").click(function () {
+            searchUserClick("")
+        })
+        function searchUserClick(isHuyShare) {
+            var userName = $("#input-user").val();
+            if (isHuyShare != "" && userName == "") {
+                $(".name").text("")
+                $(".username").text("")
+                $(".img").attr("src", "")
+                $(".share-satus").text("")
+                return
+            }
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetUser","Box",new{boxId = Model.id})',
+                data: { "userName": userName },
+                dataType: "json",
+                contentType: "application/json; charset = utf-8",
+                success: function (data) {
+                    if (data.username == "") {
+                        $(".name").text("Khong tim thay user")
+                        $(".username").text("")
+                        $(".img").attr("src", "")
+                        $(".share-satus").text("")
+                    } else {
+                        $(".name").text(data.name)
+                        $(".username").text(data.username)
+                        $(".img").attr("src", data.img)
+                        $(".share-satus").text(data.textShare)
+                        $(".share-satus").attr("id", data.share)
+                    }
+                },
+                error: function () {
+                    alert("error");
+                },
+            });
+        }
+        $(".share-satus").click(function () {
+            var id = $(".share-satus").attr("id")
+            console.log(id);
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("ShareBox","Box")",
+                data: { "boxId": @Model.id, "userId": id },
+                dataType: "json",
+                contentType: "application/json; charset = utf-8",
+                success: function (data) {
+                    $("#searchUser").click(searchUserClick());
+                    getListShare()
+
+                },
+                error: function () {
+                    alert("error");
+                },
+            });
+        })
+        getListShare()
+        function getListShare() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetListShare","Box")",
+                data: { "boxId": @Model.id},
+                dataType: "json",
+                contentType: "application/json; charset = utf-8",
+                success: function (data) {
+                    dataJson = JSON.parse(data)
+                    ketqua = $(".list-share")
+                    ketqua.html("")
+                    dataJson.forEach(function (item, index) {
+                        kq = `<li>${item.name} (${item.userName}) <text class="huy_share" id="${item.userId}" style="color:   red">Huy </text></li`
+                        ketqua.append(kq)
+                    });
+                    huyShare()
+
+                },
+                error: function () {
+                    alert("error")
+                },
+            })
+        };
+        function huyShare() {
+            var listId = []
+            $(".huy_share").each(function () {
+                var element = $(this);
+                var id = element.attr("id");
+                listId.push(id);
+            })
+            listId.forEach(function (item) {
+                $("#" + item + ".huy_share").click(function () {
+
+                    $(this).parent().fadeOut(500);
+                    $.ajax({
+                        type: "GET",
+                        url: "@Url.Action("ShareBox","Box")",
+                        data: { "boxId": @Model.id, "userId": item },
+                        dataType: "json",
+                        contentType: "application/json; charset = utf-8",
+                        success: function (data) {
+
+                            $("#searchUser").click(searchUserClick("Click tu nut huy"));
+                        },
+                        error: function () {
+                            alert("error");
+                        },
+                    });
+                })
+            })
+        }
+        var listIdDelete = []
+        $(".delete").each(function () {
+            var element = $(this)
+            var id = element.attr("id");
+            listIdDelete.push(id);
+        })
+        console.log(listIdDelete);
+        listIdDelete.forEach(function (item) {
+            $("#" + item).click(function () {
+                $(this).parent().fadeOut(200);
+
+                $.ajax({
                     type: "GET",
-                    // url: "http://localhost:5122/hcn/hcn",
-                    url:  "http://localhost:5274/box/sharecode",
+                    url: "@Url.Action("DeleteFile","Box")",
+                    data: { "id": @Model.id, "filename": $(this).attr("name") },
+                    dataType: "json",
                     contentType: "application/json; charset = utf-8",
                     success: function (data) {
-                         $("#kq").val(data.kq);
-                         $(".kq").html(data.kq);
 
-                         // $(".y").html(data.dientich);
-
-                         // $("#ketqua").html(JSON.stringify(data));
+    @* $("#searchUser").click(searchUserClick("Click tu nut huy")); *@
                     },
                     error: function () {
-                         alert("error");
+                        alert("error");
                     },
-               });
-          })
-     });
+                });
+            })
+        })
+
+
+    })
 </script>
 @{
-     var SummerNote = new App.Models.Summernote("Content", true, 500);
+    var SummerNote = new App.Models.Summernote("Content", true, 500);
 
 }
 <partial name="_Summernote" model="SummerNote" />

@@ -35,9 +35,9 @@ namespace App.Controllers
                          if (App.Util.VerifyHash(hashMethod, model.password, loginUser.password))
                          {
                               CurrentUser = loginUser.username;
-                              agc.a($"Login {CurrentUser}");
+                              UserId = loginUser.id;
+                              agc.a($"Login {CurrentUser} -  {UserId}");
                               return RedirectToAction("Index", "Home");
-
                          }
                          else
                          {
@@ -69,8 +69,9 @@ namespace App.Controllers
           }
           public IActionResult Logout()
           {
-               agc.a($"Logout {CurrentUser}");
+               agc.a($"Logout {CurrentUser} -  {UserId}");
                CurrentUser = "";
+               UserId = -1;
                return RedirectToAction("Login");
           }
      }

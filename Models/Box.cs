@@ -23,6 +23,9 @@ namespace App.Models
           public DateTime? DateCreated{get; set; }
           [ForeignKey("UserId")]
           public Account? Account { get; set; }
+          [StringLength(255)]
+          public string? Img { get; set; }
+          public ICollection<BoxShare>? listBoxShare { get; set; }
 
      }
 }

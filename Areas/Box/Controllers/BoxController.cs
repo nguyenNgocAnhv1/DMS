@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using App.Models;
 using System.IO;
+using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace App.Controllers.Boxs
 {
@@ -33,7 +35,16 @@ namespace App.Controllers.Boxs
                {
                     return RedirectToAction("Login", "Account");
                }
+               var user = await _context.Accounts.FirstOrDefaultAsync(a => a.username == CurrentUser);
                var appDbContext = _context.Boxs.Include(b => b.Account).Where(b => b.Account.username == CurrentUser);
+               var boxShare = _context.BoxShares.Include(b => b.Box).Include(b => b.Box.Account).Where(b => b.User.username == CurrentUser);
+               // var boxShare = _context.Boxs.Include(b => b.listBoxShare).Where(b => b.listBoxShare.Where(bs => bs.UserId == user.id).Any());
+               var listBoxShare = new List<Box>() { };
+               foreach (var item in boxShare)
+               {
+                    listBoxShare.Add(item.Box);
+               }
+               ViewBag.listBoxShare = listBoxShare;
                return View(await appDbContext.ToListAsync());
           }
 
@@ -49,23 +60,24 @@ namespace App.Controllers.Boxs
                {
                     return NotFound();
                }
-               if(box.IsPublic != true){
+               if (box.IsPublic != true)
+               {
                     return RedirectToAction("Hided");
                }
 
-               
+
                if (!string.IsNullOrEmpty(box.Pass))
                {
-                  
+
                     if (pass != box.Pass)
                     {
-                         return RedirectToAction("CheckPass", new { id = id});
+                         return RedirectToAction("CheckPass", new { id = id });
                     }
                }
                box.View = box.View + 1;
                _context.Update(box);
                await _context.SaveChangesAsync();
-               ViewBag.listFile = await _context.Files.Where(f => f.BoxId == id).ToListAsync();
+               ViewBag.listFile = await _context.Files.Where(f => f.BoxId == id && f.Name != box.Img).ToListAsync();
                ViewBag.listComment = await _context.Comments.Include(c => c.Account).Where(c => c.BoxId == id).ToListAsync();
                ViewBag.Account = acc;
                var voteStatus = await _context.Votes.FirstOrDefaultAsync(v => v.BoxId == box.id && v.AccountId == acc.id);
@@ -94,12 +106,13 @@ namespace App.Controllers.Boxs
                return View();
           }
           [HttpPost]
-          public IActionResult CheckPass(int id,string pass)
+          public IActionResult CheckPass(int id, string pass)
           {
 
-               return RedirectToAction("Details", new {id = id, pass = pass});
+               return RedirectToAction("Details", new { id = id, pass = pass });
           }
-          public IActionResult Hided(){
+          public IActionResult Hided()
+          {
                return View();
           }
           // GET: Box/Create
@@ -114,8 +127,17 @@ namespace App.Controllers.Boxs
           // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
           [HttpPost]
           [ValidateAntiForgeryToken]
-          public async Task<IActionResult> Create([Bind("id,Title,Content,Pass,ShareCode,Url,IsPublic,UserId")] Box box)
+          public async Task<IActionResult> Create(IFormFile? file, [Bind("id,Title,Content,Pass,ShareCode,Url,IsPublic,UserId")] Box box)
           {
+               if (file == null)
+               {
+                    ModelState.AddModelError(string.Empty, "Can them anh dai dien cho quoc hop");
+               }
+               else
+               {
+                    box.Img = System.IO.Path.GetFileName(file.FileName);
+
+               }
                box.UserId = _context.Accounts.FirstOrDefault(a => a.username == _user).id;
                box.Url = agc.GenerateSlug(box.Title) + "_" + CodeRandom(6);
                box.DateCreated = DateTime.Now;
@@ -124,6 +146,8 @@ namespace App.Controllers.Boxs
                {
                     _context.Add(box);
                     await _context.SaveChangesAsync();
+                    await UpdateFileAsync(box.id, file, "");
+
                     return RedirectToAction(nameof(Index));
                }
                ViewData["UserId"] = new SelectList(_context.Accounts, "id", "username", box.UserId);
@@ -144,6 +168,8 @@ namespace App.Controllers.Boxs
                {
                     return NotFound();
                }
+               ViewBag.listFile = await _context.Files.Where(f => f.BoxId == id && f.Name != box.Img).ToListAsync();
+
                ViewData["UserId"] = new SelectList(_context.Accounts, "id", "username", box.UserId);
                return View(box);
           }
@@ -153,19 +179,38 @@ namespace App.Controllers.Boxs
           // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
           [HttpPost]
           [ValidateAntiForgeryToken]
-          public async Task<IActionResult> Edit(int id, [Bind("id,Title,Content,Pass,ShareCode,Url,IsPublic,UserId")] Box box)
+          public async Task<IActionResult> Edit(int id, IFormFile? file, Box box)
           {
+               // var boxSql = (await _context.Boxs.FirstOrDefaultAsync(b => b.id == box.id)).Img;
+               var oldImg = box.Img;
+               if (file != null)
+               {
+                    box.Img = System.IO.Path.GetFileName(file.FileName);
+
+
+               }
                if (id != box.id)
                {
                     return NotFound();
                }
+               ViewBag.listFile = await _context.Files.Where(f => f.BoxId == id && f.Name != box.Img).ToListAsync();
 
                if (ModelState.IsValid)
                {
                     try
                     {
+
                          _context.Update(box);
+
                          await _context.SaveChangesAsync();
+                         if (file != null)
+                         {
+                              await UpdateFileAsync(box.id, file, oldImg);
+
+
+                         }
+
+
                     }
                     catch (DbUpdateConcurrencyException)
                     {
@@ -178,10 +223,13 @@ namespace App.Controllers.Boxs
                               throw;
                          }
                     }
-                    return RedirectToAction(nameof(Index));
+               }
+               else
+               {
+                    return View(box);
                }
                ViewData["UserId"] = new SelectList(_context.Accounts, "id", "password", box.UserId);
-               return View(box);
+               return RedirectToAction("Edit", new { id = box.id });
           }
 
           // GET: Box/Delete/5
@@ -248,12 +296,10 @@ namespace App.Controllers.Boxs
                }
                var box = await _context.Boxs
                                 .FirstOrDefaultAsync(m => m.id == id);
-
                // create folder
                string path = Path.Combine(Directory.GetCurrentDirectory(), "upload", box.Url);
                Directory.CreateDirectory(path);
                // Iterate each files
-               System.Console.WriteLine();
                foreach (var file in files)
                {
 
@@ -283,13 +329,17 @@ namespace App.Controllers.Boxs
                          BoxId = id,
                          View = 0,
                     };
-                    _context.Add(fileSql);
+                    var isFileExit = await _context.Files.FirstOrDefaultAsync(f => f.Name == fileSql.Name && f.BoxId == fileSql.BoxId);
+                    if (isFileExit == null)
+                    {
+                         _context.Add(fileSql);
+                    }
                }
                await _context.SaveChangesAsync();
                ViewBag.Message = "Files are successfully uploaded";
                ViewBag.box = box;
                var model = await _context.Files.Where(f => f.BoxId == id).ToListAsync();
-               return RedirectToAction("UpdateFile", new { id = box.id });
+               return RedirectToAction("Edit", new { id = box.id });
           }
           [HttpGet]
           public async Task<IActionResult> Download(string filename, int id)
@@ -328,7 +378,10 @@ namespace App.Controllers.Boxs
 
                _context.Files.Remove(file);
                await _context.SaveChangesAsync();
-               return RedirectToAction("UpdateFile", new { id = id });
+               // return RedirectToAction("UpdateFile", new { id = id });
+               // return RedirectToAction("Edit", new { id = id });
+               return Json(new { });
+
           }
 
 
@@ -344,8 +397,83 @@ namespace App.Controllers.Boxs
                     chars[i] = allowedChars[rd.Next(0, allowedChars.Length)];
                }
                string kq = new string(chars);
-               // return Content("ac");
                return Json(new { kq = kq });
+          }
+          [HttpGet]
+          public async Task<IActionResult> GetUser(string userName, int boxId)
+          {
+               var user = await _context.Accounts.FirstOrDefaultAsync(a => a.username == userName);
+
+               if (user == null)
+               {
+                    return Json(new
+                    {
+                         username = "",
+                         name = "",
+                         img = "/upload/avt/avtuser.jpg",
+                         share = "",
+                         textShare = "",
+                    });
+
+               }
+               else
+               {
+                    var isShare = await _context.BoxShares.FirstOrDefaultAsync(bs => bs.BoxId == boxId && bs.UserId == user.id);
+                    if (isShare != null)
+                    {
+                         return Json(new
+                         {
+                              username = user.username,
+                              name = user.Name,
+                              img = "/upload/avt/avtuser.jpg",
+                              share = user.id,
+                              textShare = "Huy share",
+                         });
+                    }
+                    else
+                    {
+                         return Json(new
+                         {
+                              username = user.username,
+                              name = user.Name,
+                              img = "/upload/avt/avtuser.jpg",
+                              share = user.id,
+                              textShare = "Share ngay ",
+                         });
+                    }
+               }
+          }
+          [HttpGet]
+          public async Task<IActionResult> ShareBox(int userId, int boxId)
+          {
+               var shareBox = new BoxShare()
+               {
+                    BoxId = boxId,
+                    UserId = userId,
+               };
+               var isExit = await _context.BoxShares.FirstOrDefaultAsync(b => b.UserId == userId && b.BoxId == boxId);
+               if (isExit == null)
+               {
+                    _context.Add(shareBox);
+
+               }
+               else
+               {
+
+                    _context.BoxShares.Remove(isExit);
+
+
+               }
+               await _context.SaveChangesAsync();
+
+               return Json(new { text = "DaShare" });
+          }
+          [HttpGet]
+          public async Task<IActionResult> GetListShare(int boxId)
+          {
+               var listShare = _context.BoxShares.Include(b => b.User).Select(b => new { BoxId = b.BoxId, name = b.User.Name, userId = b.UserId, userName = b.User.username }).Where(b => b.BoxId == boxId);
+               var listShareString = JsonConvert.SerializeObject(listShare);
+               return Json(listShareString);
           }
           [HttpPost]
           public async Task<IActionResult> CreateComment(int boxId, string content)
@@ -465,6 +593,52 @@ namespace App.Controllers.Boxs
                 {".gif", "image/gif"},
                 {".csv", "text/csv"}
             };
+          }
+          public async Task UpdateFileAsync(int id, IFormFile file, string oldImg)
+          {
+               var fileName = System.IO.Path.GetFileName(file.FileName);
+               var box = await _context.Boxs
+                                .FirstOrDefaultAsync(m => m.id == id);
+               var ImgFile = await _context.Files.FirstOrDefaultAsync(f => f.BoxId == box.id && f.Name == oldImg);
+               if (ImgFile != null)
+               {
+                    _context.Files.Remove(ImgFile);
+                    _context.SaveChangesAsync();
+               }
+               // create folder
+               string path = Path.Combine(Directory.GetCurrentDirectory(), "upload", box.Url);
+               Directory.CreateDirectory(path);
+               // Iterate each files
+
+
+               // Get the file name from the browser
+
+               // Get file path to be uploaded
+               var filePath = Path.Combine(Directory.GetCurrentDirectory(), "upload", box.Url, fileName);
+
+               // Check If file with same name exists and delete it
+               if (System.IO.File.Exists(filePath))
+               {
+                    System.IO.File.Delete(filePath);
+               }
+
+               // Create a new local file and copy contents of uploaded file
+               using (var localFile = System.IO.File.OpenWrite(filePath))
+               using (var uploadedFile = file.OpenReadStream())
+               {
+                    uploadedFile.CopyTo(localFile);
+               }
+               var fileSql = new App.Models.File()
+               {
+                    Name = fileName,
+                    DatePost = DateTime.Now,
+                    Size = (file.Length / 1024.0) / 1024.0,
+                    BoxId = id,
+                    View = 0,
+               };
+               _context.Add(fileSql);
+
+               await _context.SaveChangesAsync();
           }
 
      }

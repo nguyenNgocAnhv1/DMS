@@ -1,0 +1,58 @@
+@model App.Models.Account
+@{
+    ViewData["Title"] = "Detail";
+    var listBox = ViewBag.listBox as List<App.Models.Box>;
+        var stt = 0;
+}
+@Html.Partial("_ThongBao")
+
+<div class="row">
+    <div class="col-4">
+        <div class="">
+            <div class="">
+                <img src="/upload/avt/@Model.Img" height="200" alt="">
+                <form asp-action="UpdateAvt" asp-controller = "User" asp-route-id = "@Model.id" method="post" enctype="multipart/form-data">
+                    <div class="input-group mb-3">
+                        <input type="file" class="form-control" id="file" name="file">
+                <input type="submit" value="Luu" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+            <p>Tên: @Model.Name</p>
+            <p>Công việc: @Model.JobTitle</p>
+            <p>Mô tả cá nhân: @Model.Description</p>
+        </div>
+        <div class="">
+            <a asp-action="Edit" asp-route-id="@Model.id" asp-controller="User" class="btn btn-primary">Chinh sua thong
+                tin ca nha</a>
+        </div>
+
+    </div>
+    <div class="col-8">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Stt</th>
+                    <th>Ten</th>
+                    <th>Ngay tai len</th>
+                    <th>View</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                @foreach (var item in listBox)
+                {
+                    stt=stt+1;
+                    <tr>
+                        <td>@stt</td>
+                        <td>@item.Title</td>
+                        <td>@item.DateCreated</td>
+                        <td>@item.View</td>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>

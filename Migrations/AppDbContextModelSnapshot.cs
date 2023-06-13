@@ -79,6 +79,10 @@ namespace app.Migrations
                     b.Property<DateTime?>("DateCreated")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Img")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
                     b.Property<bool>("IsPublic")
                         .HasColumnType("bit")
                         .HasColumnName("IsAvaliable");
@@ -273,7 +277,7 @@ namespace app.Migrations
             modelBuilder.Entity("App.Models.BoxShare", b =>
                 {
                     b.HasOne("App.Models.Box", "Box")
-                        .WithMany()
+                        .WithMany("listBoxShare")
                         .HasForeignKey("BoxId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -355,6 +359,11 @@ namespace app.Migrations
                     b.Navigation("Account");
 
                     b.Navigation("Box");
+                });
+
+            modelBuilder.Entity("App.Models.Box", b =>
+                {
+                    b.Navigation("listBoxShare");
                 });
 #pragma warning restore 612, 618
         }

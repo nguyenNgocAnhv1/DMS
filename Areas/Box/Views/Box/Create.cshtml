@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-10">
-        <form asp-action="Create">
+        <form asp-action="Create"  enctype="multipart/form-data">
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
@@ -33,6 +33,7 @@
                 <input asp-for="ShareCode" id="kq"  class="form-control d-none" />
                 <span asp-validation-for="ShareCode" class="kq"></span>
             </div>
+            
             @* <div class="form-group">
                 <label asp-for="Url" class="control-label"></label>
                 <input asp-for="Url" class="form-control" />
@@ -42,6 +43,11 @@
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsPublic" checked/> @Html.DisplayNameFor(model => model.IsPublic)
                 </label>
+            </div>
+            <h5>Chinh sua anh dai dien cuoc hop</h5>
+            <div class="input-group mb-3">
+                <input type="file" class="form-control" id="file" name="file">
+                @* <input type="submit" value="Save" class="btn btn-primary" /> *@
             </div>
             @* <div class="form-group">
                 <label asp-for="UserId" class="control-label"></label>
