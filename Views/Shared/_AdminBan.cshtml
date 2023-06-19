@@ -1,0 +1,36 @@
+@using System.Collections
+@model ArrayList
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+     ISession session = HttpContextAccessor.HttpContext.Session;
+     var user = @session.GetString("UserName");
+     var userId = @session.GetInt32("UserId");
+     var userRole = @session.GetString("UserRole");
+}
+@if (userRole.Contains("Admin"))
+{
+     <p class="admin-ban" id="@Model[0]" style="color: red;">@Model[1]</p>
+}
+<script>
+     document.addEventListener("DOMContentLoaded", function () {
+          $("#"+"@Model[0]"+".admin-ban").click(function (e) {
+               $.ajax({
+                    type: "GET",
+                    url: "@Url.Action("AdminBan","Box")",
+                    data: { "id" : "@Model[0]" },
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                         console.log(data.kq);
+                         if (data.kq == "True") {
+                              $("#"+"@Model[0]"+".admin-ban").text("Mo khoa")
+                         } else {
+                              $("#"+"@Model[0]"+".admin-ban").text("Khoa ngay")
+                         }
+                    }, error: function () {
+                         alert("Loi")
+                    }
+               })
+          })
+     })
+</script>

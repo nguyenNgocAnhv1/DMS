@@ -1,9 +1,23 @@
 @using System.Globalization
 @using App.Models
 @using System.Collections
-
 @model App.Models.Box
+@inject IHttpContextAccessor HttpContextAccessor
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    ISession session = HttpContextAccessor.HttpContext.Session;
+    var user = @session.GetString("UserName");
+    var userId = @session.GetInt32("UserId");
+    var userRole = @session.GetString("UserRole");
+    if (userRole == null)
+    {
+        userRole = "";
+    }
+    var request = HttpContextAccessor.HttpContext.Request;
+    var fullUrl = $"{request.Scheme}://{request.Host}";
 
+}
 @{
     ViewData["Title"] = "Details";
     List<App.Models.File> listFile = ViewBag.listFile as List<App.Models.File>;
@@ -23,7 +37,7 @@
     <h4>@Model.DateCreated</h4>
     <img height="50" src="/upload/avt/avtuser.jpg" alt="">
 
-      <a asp-area="Box" asp-controller="User" asp-action="Detail" asp-route-id="@userNow"><i>@Model.Account.Name</i></a>
+    <a asp-area="Box" asp-controller="User" asp-action="Detail" asp-route-id="@userNow"><i>@Model.Account.Name</i></a>
     <br>
     <i>View: @Model.View</i>
     <div class="d-flex align-items-center ms-2 " style="font-size: 30px; color:#8d969f ;">
@@ -47,8 +61,24 @@
         </p>
     </div>
     <br>
-    <a class="btn btn-warning" asp-area="Box" asp-controller="Box" asp-action="UpdateFile"
-        asp-route-id="@Model.id">Chinh sua file</a>
+    <p>
+        <a class="btn btn-primary collapsed" data-bs-toggle="collapse" href="#collapseExample" role="button"
+            aria-expanded="false" aria-controls="collapseExample">
+            Chia sẻ
+        </a>
+    </p>
+    <div class="collapse" id="collapseExample" style="">
+        <button class="share-full">Chia se day du noi dung</button>
+        <p class=" share-full-link">@fullUrl/ @Url.Action("Details","Box",new {id = Model.id})</p>
+        <button>Chia se phien ban rut gon</button>
+        <p class=" share-full-link">@fullUrl@Url.Action("ShortLink","Box",new {id = Model.id})</p>
+    </div>
+    <br>
+    @if (userRole.Contains("Admin") || userNow == Model.UserId)
+    {
+        <a class="btn btn-warning" asp-area="Box" asp-controller="Box" asp-action="Edit" asp-route-id="@Model.id">Chinh sua
+            Box</a>
+    }
     <hr />
     <dl class="row">
 
@@ -124,7 +154,11 @@
 
     </tbody>
 </table>
+<a class="btn btn-primary" asp-controller="box" asp-action="DowloadAll" asp-route-id="@Model.id"
+    asp-route-url="@Model.Url"> Tải toàn bộ</a>
 <hr>
+<br>
+<h5>Danh sách commet</h5>
 <div class="">
     <form asp-action="CreateComment" asp-route-boxId="@Model.id">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -139,6 +173,7 @@
     </form>
 </div>
 <br>
+
 <div class="">
     @foreach (var item in comment)
     {
@@ -148,7 +183,9 @@
                 @Html.Partial("_CommentAction",new ArrayList(){Model.id,item.Id, item.AccountId,userNow})
             </div>
             <div class="flex-grow-1 ms-3 detail-comment">
-                  <a asp-area="Box" asp-controller="User" asp-action="Detail" asp-route-id="@userNow"><h6>@item.Account.Name</h6></a>
+                <a asp-area="Box" asp-controller="User" asp-action="Detail" asp-route-id="@item.AccountId">
+                    <h6>@item.Account.Name</h6>
+                </a>
                 <p>
                     @Html.Raw(@item.Content)
                 </p>
@@ -162,7 +199,8 @@
 
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" asp-route-userAccess="@Model.UserId"> Back to List</a>
+
 </div>
 @{
     var SummerNote = new App.Models.Summernote("comment", true);

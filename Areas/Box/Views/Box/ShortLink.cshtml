@@ -1,0 +1,50 @@
+@model App.Models.Box
+@{
+    ViewData["Title"] = "ShortLink";
+    @* Layout = ""; *@
+    List<App.Models.File> listFile = ViewBag.listFile as List<App.Models.File>;
+
+}
+<img height="500" src="/upload/@Model.Url/@Model.Img" alt="">
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Date
+            </th>
+            <th>
+                Size
+            </th>
+            <th>Views</th>
+
+            <th>Dowload</th>
+
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in listFile)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.DatePost</td>
+                <td>@item.Size</td>
+                <td>@item.View</td>
+                <td>
+                    <a asp-area="Box" asp-controller="Box" asp-action="Download" asp-route-filename="@item.Name"
+                    asp-route-id="@Model.id">
+                        <i class="fa-solid fa-circle-down"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+<a class="btn btn-primary" asp-controller="box" asp-action="DowloadAll" asp-route-id="@Model.id"
+    asp-route-url="@Model.Url"> Tải toàn bộ</a>
+<a asp-controller="Box" asp-action="Details" asp-route-id = "@Model.id">Xem chi tiết</a>

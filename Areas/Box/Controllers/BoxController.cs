@@ -1,4 +1,5 @@
 using System;
+using System.Web;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,7 +10,8 @@ using App.Models;
 using System.IO;
 using System.Text.Json;
 using Newtonsoft.Json;
-
+using System.IO.Compression;
+using System.IO.Compression;
 namespace App.Controllers.Boxs
 {
      [Area("Box")]
@@ -29,22 +31,22 @@ namespace App.Controllers.Boxs
           }
 
           // GET: Box
-          public async Task<IActionResult> Index()
+          public async Task<IActionResult> Index(int userAccess)
           {
                if (!IsLogin)
                {
                     return RedirectToAction("Login", "Account");
                }
-               var user = await _context.Accounts.FirstOrDefaultAsync(a => a.username == CurrentUser);
-               var appDbContext = _context.Boxs.Include(b => b.Account).Where(b => b.Account.username == CurrentUser);
-               var boxShare = _context.BoxShares.Include(b => b.Box).Include(b => b.Box.Account).Where(b => b.User.username == CurrentUser);
-               // var boxShare = _context.Boxs.Include(b => b.listBoxShare).Where(b => b.listBoxShare.Where(bs => bs.UserId == user.id).Any());
+               var user = await _context.Accounts.FirstOrDefaultAsync(a => a.id == userAccess);
+               var appDbContext = _context.Boxs.Include(b => b.Account).Where(b => b.Account.id == userAccess);
+               var boxShare = _context.BoxShares.Include(b => b.Box).Include(b => b.Box.Account).Where(b => b.User.id == userAccess);
                var listBoxShare = new List<Box>() { };
                foreach (var item in boxShare)
                {
                     listBoxShare.Add(item.Box);
                }
                ViewBag.listBoxShare = listBoxShare;
+               ViewBag.name = user.Name;
                return View(await appDbContext.ToListAsync());
           }
 
@@ -55,7 +57,7 @@ namespace App.Controllers.Boxs
                var box = await _context.Boxs
                    .Include(b => b.Account)
                    .FirstOrDefaultAsync(m => m.id == id);
-               var acc = await _context.Accounts.FirstOrDefaultAsync(a => a.username == CurrentUser);
+
                if (id == null || _context.Boxs == null)
                {
                     return NotFound();
@@ -63,6 +65,10 @@ namespace App.Controllers.Boxs
                if (box.IsPublic != true)
                {
                     return RedirectToAction("Hided");
+               }
+               if (box.AdminBan == true)
+               {
+                    return View("AdminBan");
                }
 
 
@@ -79,16 +85,25 @@ namespace App.Controllers.Boxs
                await _context.SaveChangesAsync();
                ViewBag.listFile = await _context.Files.Where(f => f.BoxId == id && f.Name != box.Img).ToListAsync();
                ViewBag.listComment = await _context.Comments.Include(c => c.Account).Where(c => c.BoxId == id).ToListAsync();
-               ViewBag.Account = acc;
-               var voteStatus = await _context.Votes.FirstOrDefaultAsync(v => v.BoxId == box.id && v.AccountId == acc.id);
-               if (voteStatus != null)
+               ViewBag.voteStatus = 100;
+               if (CurrentUser != null)
                {
-                    ViewBag.voteStatus = voteStatus.Status;
+                    var acc = await _context.Accounts.FirstOrDefaultAsync(a => a.username == CurrentUser);
+                    ViewBag.Account = acc;
+                    var voteStatus = await _context.Votes.FirstOrDefaultAsync(v => v.BoxId == box.id && v.AccountId == acc.id);
+                    if (voteStatus != null)
+                    {
+                         ViewBag.voteStatus = voteStatus.Status;
+                    }
+
+
                }
                else
                {
-                    ViewBag.voteStatus = 100;
+                    ViewBag.Account = null;
+
                }
+
                if (box == null)
                {
                     return NotFound();
@@ -99,6 +114,39 @@ namespace App.Controllers.Boxs
 
                return View(box);
           }
+          [HttpGet]
+          public async Task<IActionResult> ShortLink(int id, string? pass)
+          {
+               var box = await _context.Boxs.FirstOrDefaultAsync(b => b.id == id);
+
+
+               if (id == null || _context.Boxs == null)
+               {
+                    return NotFound();
+               }
+               if (box.IsPublic != true)
+               {
+                    return RedirectToAction("Hided");
+               }
+               if (box.AdminBan == true)
+               {
+                    return View("AdminBan");
+               }
+
+
+               if (!string.IsNullOrEmpty(box.Pass))
+               {
+
+                    if (pass != box.Pass)
+                    {
+                         return RedirectToAction("CheckPass", new { id = id });
+                    }
+               }
+               ViewBag.listFile = await _context.Files.Where(f => f.BoxId == id && f.Name != box.Img).ToListAsync();
+
+               return View(box);
+          }
+
           [HttpGet]
           public IActionResult CheckPass(int id)
           {
@@ -127,7 +175,7 @@ namespace App.Controllers.Boxs
           // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
           [HttpPost]
           [ValidateAntiForgeryToken]
-          public async Task<IActionResult> Create(IFormFile? file, [Bind("id,Title,Content,Pass,ShareCode,Url,IsPublic,UserId")] Box box)
+          public async Task<IActionResult> Create(IFormFile? file, IFormFile[]? files, [Bind("id,Title,Content,Pass,ShareCode,Url,IsPublic,UserId")] Box box)
           {
                if (file == null)
                {
@@ -138,18 +186,27 @@ namespace App.Controllers.Boxs
                     box.Img = System.IO.Path.GetFileName(file.FileName);
 
                }
-               box.UserId = _context.Accounts.FirstOrDefault(a => a.username == _user).id;
-               box.Url = agc.GenerateSlug(box.Title) + "_" + CodeRandom(6);
-               box.DateCreated = DateTime.Now;
-               box.View = 0;
+
                if (ModelState.IsValid)
                {
+                    box.UserId = _context.Accounts.FirstOrDefault(a => a.username == _user).id;
+                    box.Url = agc.GenerateSlug(box.Title) + "_" + CodeRandom(6);
+                    box.DateCreated = DateTime.Now;
+                    box.View = 0;
+                    box.AdminBan = false;
                     _context.Add(box);
                     await _context.SaveChangesAsync();
                     await UpdateFileAsync(box.id, file, "");
-
-                    return RedirectToAction(nameof(Index));
+                    if (files != null)
+                    {
+                         foreach (var item in files)
+                         {
+                              await UpdateFileAsync(box.id, item, "");
+                         }
+                    }
+                    return RedirectToAction("Index", new { userAccess = box.UserId });
                }
+
                ViewData["UserId"] = new SelectList(_context.Accounts, "id", "username", box.UserId);
                return View(box);
           }
@@ -186,8 +243,6 @@ namespace App.Controllers.Boxs
                if (file != null)
                {
                     box.Img = System.IO.Path.GetFileName(file.FileName);
-
-
                }
                if (id != box.id)
                {
@@ -232,6 +287,13 @@ namespace App.Controllers.Boxs
                return RedirectToAction("Edit", new { id = box.id });
           }
 
+          public async Task<IActionResult> AdminBan(int id)
+          {
+               var box = await _context.Boxs.FirstOrDefaultAsync(b => b.id == id);
+               box.AdminBan = !box.AdminBan;
+               await _context.SaveChangesAsync();
+               return Json(new { kq = box.AdminBan.ToString() });
+          }
           // GET: Box/Delete/5
           public async Task<IActionResult> Delete(int? id)
           {
@@ -252,9 +314,9 @@ namespace App.Controllers.Boxs
           }
 
           // POST: Box/Delete/5
-          [HttpPost, ActionName("Delete")]
-          [ValidateAntiForgeryToken]
-          public async Task<IActionResult> DeleteConfirmed(int id)
+          // [HttpPost, ActionName("Delete")]
+          // [ValidateAntiForgeryToken]
+          public async Task<IActionResult> DeleteConfirmed(int id, int userAccess)
           {
                if (_context.Boxs == null)
                {
@@ -276,7 +338,7 @@ namespace App.Controllers.Boxs
 
 
                await _context.SaveChangesAsync();
-               return RedirectToAction(nameof(Index));
+               return RedirectToAction("Index", new { userAccess = userAccess });
           }
           [HttpGet]
           public async Task<IActionResult> UpdateFile(int id)
@@ -360,7 +422,48 @@ namespace App.Controllers.Boxs
                     await stream.CopyToAsync(memory);
                }
                memory.Position = 0;
-               return File(memory, GetContentType(path), Path.GetFileName(path));
+               return File(memory, "application/octet-stream", Path.GetFileName(path));
+          }
+          [HttpGet]
+          public async Task<IActionResult> DowloadAll(int id, string url)
+          {
+               // var box = await _context.Boxs.FirstOrDefaultAsync( b => b.id == id);
+               var listFile = new List<string>() { };
+               var listFileSql = _context.Files.Where(f => f.BoxId == id);
+               if (listFileSql == null)
+               {
+                    return Content("Chưa có  file");
+               }
+               foreach (var file in listFileSql)
+               {
+                    listFile.Add(Path.Combine(Directory.GetCurrentDirectory(), "upload", url, file.Name));
+               }
+               using (MemoryStream memoryStream = new MemoryStream())
+               {
+                    using (ZipArchive zipArchive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                    {
+                         foreach (string filePath in listFile)
+                         {
+
+                              string fileName = Path.GetFileName(filePath);
+                              ZipArchiveEntry entry = zipArchive.CreateEntry(fileName);
+
+                              using (Stream entryStream = entry.Open())
+                              using (FileStream fileStream = new FileStream(filePath, FileMode.Open))
+                              {
+                                   fileStream.CopyTo(entryStream);
+                              }
+                         }
+                    }
+
+                    memoryStream.Position = 0;
+
+                    // Create a new MemoryStream to return as the File content
+                    var resultStream = new MemoryStream(memoryStream.ToArray());
+
+                    // Return the ZIP archive as a downloadable file
+                    return File(resultStream, "application/zip", "files.zip");
+               }
           }
           [HttpGet]
           public async Task<IActionResult> DeleteFile(string filename, int id)

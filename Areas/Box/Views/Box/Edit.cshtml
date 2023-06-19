@@ -14,6 +14,9 @@
         <form asp-action="Edit" asp-route-id="@Model.id" enctype="multipart/form-data">
             <div asp-validation-summary="All" class="text-danger"></div>
             <input type="hidden" asp-for="id" />
+             <input type="hidden" asp-for="View" />
+             <input type="hidden" asp-for="AdminBan" />
+             <input type="hidden" asp-for="DateCreated" />
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
@@ -29,12 +32,12 @@
                 <input asp-for="Pass" class="form-control" />
                 <span asp-validation-for="Pass" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            @* <div class="form-group">
                 <label asp-for="ShareCode" class="control-label"></label>
                 <input type="button" value="Tao" id="generator">
                 <input asp-for="ShareCode" id="kq" class="form-control d-none" />
                 <span asp-validation-for="ShareCode" class="kq">@Model.ShareCode</span>
-            </div>
+            </div> *@
             <div class="form-group d-none">
                 <label asp-for="Url" class="control-label"></label>
                 <input asp-for="Url" class="form-control" />
@@ -143,7 +146,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" asp-route-userAccess= "@Model.UserId"> Back to List</a>
 </div>
 @* <form asp-action="UpdateFile" method="post" enctype="multipart/form-data">
     <div class="input-group mb-3">

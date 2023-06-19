@@ -31,6 +31,7 @@ namespace App.Controllers.Boxs
                var user = await _context.Accounts.FirstOrDefaultAsync(a => a.id == id);
                var listBox = _context.Boxs.Where(b => b.UserId == user.id && b.IsPublic == true).ToList();
                ViewBag.listBox = listBox;
+
                return View(user);
           }
           [HttpGet]
@@ -44,13 +45,18 @@ namespace App.Controllers.Boxs
           {
                ModelState.Remove("acc.username");
                ModelState.Remove("acc.password");
+               var oldAcc = await _context.Accounts.FirstOrDefaultAsync(a => a.id == id);
                if (ModelState.IsValid)
                {
-                    _context.Update(acc);
+                    oldAcc.Name = acc.Name;
+                    oldAcc.JobTitle = acc.JobTitle;
+                    oldAcc.Description = acc.Description;
+                    _context.Update(oldAcc);
                     await _context.SaveChangesAsync();
-                    _ThongBao = "Update thanh cong";
                }
-               return View(acc);
+               _ThongBao = "Update thanh cong";
+
+               return RedirectToAction("Edit", new { id = acc.id });
           }
           [HttpPost]
           public async Task<IActionResult> UpdateAvt(int id, IFormFile file)
@@ -58,6 +64,12 @@ namespace App.Controllers.Boxs
 
                var acc = await _context.Accounts
                                 .FirstOrDefaultAsync(m => m.id == id);
+               if (acc.Img != null && acc.Img != "avtuser.jpg")
+               {
+                    string oldFile = Path.Combine(Directory.GetCurrentDirectory(), "upload", "avt", acc.Img);
+                    System.IO.File.Delete(oldFile);
+
+               }
                if (file == null)
                {
                     _ThongBao = "Hay tai len anh";
@@ -94,10 +106,78 @@ namespace App.Controllers.Boxs
                await _context.SaveChangesAsync();
                return RedirectToAction("Detail", new { id = acc.id });
           }
-          public async Task<IActionResult> Admin()
+          public async Task<IActionResult> MyAdmin()
           {
                var listUser = _context.Accounts.ToList();
                return View(listUser);
+          }
+          public async Task<IActionResult> Ban(int userId)
+          {
+               var acc = await _context.Accounts.FirstOrDefaultAsync(a => a.id == userId);
+               if (acc.BanEnabled == null)
+               {
+                    acc.BanEnabled = true;
+               }
+               else
+               {
+                    acc.BanEnabled = !acc.BanEnabled;
+               }
+               _context.Update(acc);
+               await _context.SaveChangesAsync();
+               return RedirectToAction("MyAdmin");
+          }
+          public async Task<IActionResult> SetRole(int id)
+          {
+               // var boxShare = await _context.BoxShares.FirstOrDefaultAsync(b => b.id == id);
+
+               // var lisrRole = (await _context.Accounts.Include(a => a.ListBoxShare).SelectMany(a => a.).FirstOrDefaultAsync(a => a.id == id).).
+               var acc = await _context.Accounts.FirstOrDefaultAsync(a => a.id == id);
+               var listRole = _context.UserRoles.Where(b => b.UserId == id).Select(b => b.RoleId).ToList();
+               var userRole = new BoxShareList()
+               {
+                    RoleList = listRole,
+               };
+               var listAllRole = _context.Roles.ToList();
+               ViewBag.listAllRole = new MultiSelectList(listAllRole, "id", "Name");
+               ViewBag.id = id;
+               ViewBag.name = acc.Name;
+               return View(userRole);
+          }
+          [HttpPost]
+          public async Task<IActionResult> SetRole(int id, BoxShareList shareList)
+          {
+               var listAllRole = _context.Roles.ToList();
+               ViewBag.listAllRole = new MultiSelectList(listAllRole, "id", "Name");
+               ViewBag.id = id;
+               var userRole = _context.UserRoles.Where(u => u.UserId == id);
+               var listNewUserRole = new List<UserRole>() { };
+
+
+               _context.RemoveRange(userRole);
+               if(shareList.RoleList == null){
+                    shareList.RoleList = new List<int>(){};
+               }
+               foreach (var item in shareList.RoleList)
+               {
+                    listNewUserRole.Add(
+                         new UserRole()
+                         {
+                              UserId = id,
+                              RoleId = item
+                         }
+                    );
+               }
+               _context.AddRange(listNewUserRole);
+               await _context.SaveChangesAsync();
+
+               var listRole = _context.UserRoles.Where(b => b.UserId == id).Select(b => b.RoleId).ToList();
+               var model = new BoxShareList()
+               {
+                    RoleList = listRole,
+               };
+               _ThongBao = "Thanh cong";
+
+               return RedirectToAction("SetRole", new{id = id});
           }
      }
 }

@@ -60,6 +60,18 @@ public class BaseController :Controller
             HttpContext.Session.SetString("UserName", value);
         }
     }
+     public string UserRole
+    {
+        get
+        {
+            return HttpContext.Session.GetString("UserRole");
+
+        }
+        set
+        {
+            HttpContext.Session.SetString("UserRole", value);
+        }
+    }
     public int UserId
     {
         get

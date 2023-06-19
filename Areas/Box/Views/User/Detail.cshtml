@@ -1,8 +1,28 @@
 @model App.Models.Account
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    ISession session = HttpContextAccessor.HttpContext.Session;
+    var user = @session.GetString("UserName");
+    var userId = @session.GetInt32("UserId");
+    var userRole = @session.GetString("UserRole");
+    if (userRole == null)
+    {
+        userRole = "";
+    }
+    if (userId == null)
+    {
+        userId = -1;
+    }
+    if (user == null)
+    {
+        user = "";
+    }
+
+}
 @{
     ViewData["Title"] = "Detail";
     var listBox = ViewBag.listBox as List<App.Models.Box>;
-        var stt = 0;
+    var stt = 0;
 }
 @Html.Partial("_ThongBao")
 
@@ -11,21 +31,28 @@
         <div class="">
             <div class="">
                 <img src="/upload/avt/@Model.Img" height="200" alt="">
-                <form asp-action="UpdateAvt" asp-controller = "User" asp-route-id = "@Model.id" method="post" enctype="multipart/form-data">
-                    <div class="input-group mb-3">
-                        <input type="file" class="form-control" id="file" name="file">
-                <input type="submit" value="Luu" class="btn btn-primary" />
-                    </div>
-                </form>
+                @if (Model.id == userId || userRole.Contains("Admin"))
+                {
+                    <form asp-action="UpdateAvt" asp-controller="User" asp-route-id="@Model.id" method="post"
+                    enctype="multipart/form-data">
+                        <div class="input-group mb-3">
+                            <input type="file" class="form-control" id="file" name="file">
+                            <input type="submit" value="Luu" class="btn btn-primary" />
+                        </div>
+                    </form>
+                }
             </div>
             <p>Tên: @Model.Name</p>
             <p>Công việc: @Model.JobTitle</p>
             <p>Mô tả cá nhân: @Model.Description</p>
         </div>
-        <div class="">
-            <a asp-action="Edit" asp-route-id="@Model.id" asp-controller="User" class="btn btn-primary">Chinh sua thong
-                tin ca nha</a>
-        </div>
+        @if (Model.id == userId || userRole.Contains("Admin"))
+        {
+            <div class="">
+                <a asp-action="Edit" asp-route-id="@Model.id" asp-controller="User" class="btn btn-primary">Chinh sua thong
+                    tin ca nha</a>
+            </div>
+        }
 
     </div>
     <div class="col-8">
@@ -39,13 +66,17 @@
                 </tr>
             </thead>
             <tbody>
-                
+
                 @foreach (var item in listBox)
                 {
-                    stt=stt+1;
+                    stt = stt + 1;
                     <tr>
                         <td>@stt</td>
-                        <td>@item.Title</td>
+                        <td>
+                            <a asp-controller="Box" asp-action="Details" asp-route-id ="@item.id" asp-area = "Box">
+                                @item.Title
+                            </a>
+                        </td>
                         <td>@item.DateCreated</td>
                         <td>@item.View</td>
                     </tr>

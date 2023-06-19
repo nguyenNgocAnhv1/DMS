@@ -25,7 +25,6 @@ namespace App.Models
           public Account? Account { get; set; }
           [StringLength(255)]
           public string? Img { get; set; }
-          public ICollection<BoxShare>? listBoxShare { get; set; }
-
+          public bool? AdminBan { get; set; }
      }
 }

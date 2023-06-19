@@ -33,7 +33,6 @@ public class HomeController : Controller
                     new FileDetails { Name = System.IO.Path.GetFileName(item), Path = item });
           }
           return View(model);
-          return View();
      }
      [HttpPost]
      public IActionResult Privacy(IFormFile[] files)

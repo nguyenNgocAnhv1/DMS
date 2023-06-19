@@ -72,6 +72,9 @@ namespace app.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
+                    b.Property<bool?>("AdminBan")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -277,13 +280,13 @@ namespace app.Migrations
             modelBuilder.Entity("App.Models.BoxShare", b =>
                 {
                     b.HasOne("App.Models.Box", "Box")
-                        .WithMany("listBoxShare")
+                        .WithMany()
                         .HasForeignKey("BoxId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("App.Models.Account", "User")
-                        .WithMany()
+                        .WithMany("ListBoxShare")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -361,9 +364,9 @@ namespace app.Migrations
                     b.Navigation("Box");
                 });
 
-            modelBuilder.Entity("App.Models.Box", b =>
+            modelBuilder.Entity("App.Models.Account", b =>
                 {
-                    b.Navigation("listBoxShare");
+                    b.Navigation("ListBoxShare");
                 });
 #pragma warning restore 612, 618
         }
