@@ -51,6 +51,7 @@ namespace App.Controllers.Boxs
                     oldAcc.Name = acc.Name;
                     oldAcc.JobTitle = acc.JobTitle;
                     oldAcc.Description = acc.Description;
+                    oldAcc.Email = acc.Email;
                     _context.Update(oldAcc);
                     await _context.SaveChangesAsync();
                }

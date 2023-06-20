@@ -1102,3 +1102,4 @@ D:\ThucTap_BTT\DMS\DMS_Code\obj\Debug\net7.0\refint\app.dll
 D:\ThucTap_BTT\DMS\DMS_Code\obj\Debug\net7.0\app.pdb
 D:\ThucTap_BTT\DMS\DMS_Code\obj\Debug\net7.0\app.genruntimeconfig.cache
 D:\ThucTap_BTT\DMS\DMS_Code\obj\Debug\net7.0\ref\app.dll
+D:\ThucTap_BTT\DMS\DMS_Code\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.Google.dll

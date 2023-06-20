@@ -1,12 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "EbVyuRTCRCIl4oH8OGHCHDm8qDTvBn171xKLBANU4LSweuWlx1bFRtQ/n889gSFMjNLOZ/9ytIFHxvnYFJfi+g==",
+  "dgSpecHash": "YFRw9pso0GnBaX7QvTsP4Xzi1TdImXva5LF6YO2/wX1d+JC3Vo1wzGG+1YifmdzGI1eZ3n30FvbcRAZlQn5GTw==",
   "success": true,
   "projectFilePath": "D:\\ThucTap_BTT\\DMS\\DMS_Code\\app.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ngocanh\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\ngocanh\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
     "C:\\Users\\ngocanh\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
+    "C:\\Users\\ngocanh\\.nuget\\packages\\microsoft.aspnetcore.authentication.google\\7.0.7\\microsoft.aspnetcore.authentication.google.7.0.7.nupkg.sha512",
     "C:\\Users\\ngocanh\\.nuget\\packages\\microsoft.aspnetcore.razor.language\\6.0.11\\microsoft.aspnetcore.razor.language.6.0.11.nupkg.sha512",
     "C:\\Users\\ngocanh\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\6.0.0\\microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",
     "C:\\Users\\ngocanh\\.nuget\\packages\\microsoft.build\\17.3.2\\microsoft.build.17.3.2.nupkg.sha512",

@@ -6,3 +6,4 @@ dotnet add package  Microsoft.VisualStudio.Web.CodeGeneration.Design
 dotnet aspnet-codegenerator area Database
 dotnet aspnet-codegenerator controller -name BoxController -namespace App.Controllers.Boxs -m App.Models.Box -udl -dc App.Models.AppDbContext -outDir Areas/Box/Controllers    
 dotnet aspnet-codegenerator controller -name RoleController -namespace App.Controllers.Role -m App.Models.Role -udl -dc App.Models.AppDbContext -outDir Areas/Box/Controllers                                                                          
+

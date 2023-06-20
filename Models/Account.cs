@@ -23,7 +23,8 @@ namespace App.Models
           public string? Description { get; set; }
           // public DateTime? BanDate { get; set; }
           public bool? BanEnabled { get; set; }
-          public ICollection<BoxShare>? ListBoxShare {get; set; }
+          [StringLength(255)]
+          public string? Email { get; set; }
 
 
      }

@@ -45,6 +45,7 @@
             <p>Tên: @Model.Name</p>
             <p>Công việc: @Model.JobTitle</p>
             <p>Mô tả cá nhân: @Model.Description</p>
+            <p>Email: @Model.Email</p>
         </div>
         @if (Model.id == userId || userRole.Contains("Admin"))
         {

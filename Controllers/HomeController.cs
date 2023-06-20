@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using app.Models;
 using App.Models;
 using System.IO;
+using App;
+using Microsoft.AspNetCore.Authentication;
 
 namespace app.Controllers;
 
@@ -15,8 +17,13 @@ public class HomeController : Controller
           _logger = logger;
      }
 
-     public IActionResult Index()
+     public async Task<IActionResult> IndexAsync()
      {
+          if (TimeLife.isNew == 0)
+          {
+               await HttpContext.SignOutAsync();
+               TimeLife.isNew = 1;
+          }
           return View();
      }
 
