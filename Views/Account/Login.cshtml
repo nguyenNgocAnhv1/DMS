@@ -27,12 +27,4 @@
 <div class="">
     <a class="btn btn-primary" asp-action="LoginGoogle" >Login Google</a>
 </div>
-<ul>
-    @if (Context.User.Identity.IsAuthenticated)
-    {
-        <li>Hello @User.Identity.Name</li>
-        <li>
-            <a asp-action="LogoutGoogle" >Logout</a>
-        </li>
-    }
-</ul>
+<a asp-action="ForgotPass" >Quyên mật khẩu</a>

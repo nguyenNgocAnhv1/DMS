@@ -1,0 +1,27 @@
+@{
+    ViewData["Title"] = "NewPass";
+}
+@{
+    ViewData["Title"] = "FogotPass";
+}
+@Html.Partial("_ThongBao")
+<h1>Hay nhap lai mat khau </h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="NewPass" asp-route-id="@ViewBag.id" asp-route-code="@ViewBag.code">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <input type="text" id="pass" name="pass" class="form-control" />
+            </div>
+            <br>
+            <div class="form-group">
+                <input type="text" id="repass" name="repass" class="form-control" />
+            </div>
+            <div class="from-group">
+                <input type="submit" value="Xac nhan" class="btn btn-primary" />
+                Back <a asp-action="Login">LOGIN</a>
+            </div>
+        </form>
+    </div>
+</div>

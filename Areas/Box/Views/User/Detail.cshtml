@@ -52,6 +52,8 @@
             <div class="">
                 <a asp-action="Edit" asp-route-id="@Model.id" asp-controller="User" class="btn btn-primary">Chinh sua thong
                     tin ca nha</a>
+                <br>
+                <a  asp-action="NewPass" asp-route-id="@Model.id" asp-route-isChange = "-1" asp-controller="Account" class="btn btn-warning">Thay doi pass</a>
             </div>
         }
 
@@ -74,7 +76,7 @@
                     <tr>
                         <td>@stt</td>
                         <td>
-                            <a asp-controller="Box" asp-action="Details" asp-route-id ="@item.id" asp-area = "Box">
+                            <a asp-controller="Box" asp-action="Details" asp-route-id="@item.id" asp-area="Box">
                                 @item.Title
                             </a>
                         </td>

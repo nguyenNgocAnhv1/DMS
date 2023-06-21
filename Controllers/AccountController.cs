@@ -12,9 +12,13 @@ namespace App.Controllers
      public class AccountController : BaseController
      {
           private readonly AppDbContext _context;
-          public AccountController(AppDbContext context)
+          private readonly ISendMailService _sendmailservice;
+          [TempData]
+          public string _ThongBao { get; set; }
+          public AccountController(AppDbContext context, ISendMailService sendmailservice)
           {
                _context = context;
+               _sendmailservice = sendmailservice;
           }
           public async Task<IActionResult> Login()
           {
@@ -109,6 +113,7 @@ namespace App.Controllers
           }
           public IActionResult Register()
           {
+
                return View();
           }
           [HttpPost]
@@ -179,8 +184,93 @@ namespace App.Controllers
                agc.a($"Logout {CurrentUser} -  {UserId}");
                CurrentUser = "";
                UserId = -1;
+               UserRole = "";
                await HttpContext.SignOutAsync();
                return RedirectToAction("Login");
+          }
+          public async Task<IActionResult> ForgotPass()
+          {
+               return View();
+          }
+          [HttpPost]
+          public async Task<IActionResult> ForgotPass(Account model)
+          {
+               ModelState.Remove("password");
+               ModelState.Remove("username ");
+               var isExitUser = await _context.Accounts.FirstOrDefaultAsync(a => a.username == model.username);
+               if (isExitUser == null)
+               {
+                    ModelState.AddModelError("", "Tai khoan khong ton tai");
+                    return View(model);
+               }
+               if (isExitUser.Email != model.Email)
+               {
+                    ModelState.AddModelError("", "Email khong khop voi tai khoan");
+                    return View(model);
+               }
+               Random rnd = new Random();
+               int value = rnd.Next(1000, 9999);
+               HttpContext.Session.SetString("codepass", value.ToString());
+               MailContent content = new MailContent
+               {
+                    To = model.Email,
+                    Subject = "Xác nhận mật khẩu",
+                    Body = $"<p><strong>Mã xác nhận là: {value}</strong></p>"
+               };
+               await _sendmailservice.SendMail(content);
+               _ThongBao = "Kiem tra mail cua ban";
+               return RedirectToAction("ValidCode", new { username = model.username });
+          }
+          public async Task<IActionResult> ValidCode(string username)
+          {
+               ViewBag.username = username;
+               return View();
+          }
+          [HttpPost]
+          public async Task<IActionResult> ValidCode(int code, string username)
+          {
+               var user = await _context.Accounts.FirstOrDefaultAsync(a => a.username == username);
+               if (code.ToString() == HttpContext.Session.GetString("codepass"))
+               {
+                    return RedirectToAction("NewPass", new { code = code, id = user.id });
+               }
+               _ThongBao = "Khong dung ma";
+               return RedirectToAction("ValidCode", new { username = username });
+          }
+          public async Task<IActionResult> NewPass(int code, int id, int isChange)
+          {
+               if (isChange == -1)
+               {
+                    ViewBag.id = id;
+                    return View("NewPass");
+               }
+               if (code.ToString() == HttpContext.Session.GetString("codepass"))
+               {
+                    ViewBag.id = id;
+                    ViewBag.code = code;
+                    return View("NewPass");
+               }
+               return Content("Khong hop le");
+          }
+          [HttpPost]
+          public async Task<IActionResult> NewPass(int id, string pass, string repass, int code)
+          {
+               if (UserId == id || UserRole.Contains("Admin") || (code.ToString() == HttpContext.Session.GetString("codepass")))
+               {
+                    if (pass == repass)
+                    {
+                         var user = await _context.Accounts.FirstOrDefaultAsync(a => a.id == id);
+                         user.password = pass;
+                         _context.Accounts.Update(user);
+                         await _context.SaveChangesAsync();
+                         _ThongBao = "Update thanh cong";
+                         HttpContext.Session.SetString("codepass", "397Y8EHWDSUGEIW");
+
+                         return RedirectToAction("Logout");
+                    }
+               }
+
+               return Content("Co loi xay ra ");
           }
           public async Task LoginGoogle()
           {
@@ -211,7 +301,7 @@ namespace App.Controllers
                }
                else
                {
-                    return RedirectToAction("RegisterGet", new {name = name, email = email, img = image});
+                    return RedirectToAction("RegisterGet", new { name = name, email = email, img = image });
                }
 
 
@@ -223,6 +313,19 @@ namespace App.Controllers
                await HttpContext.SignOutAsync();
 
                return RedirectToAction("Login");
+          }
+          public async Task<IActionResult> SendMail()
+          {
+
+               MailContent content = new MailContent
+               {
+                    To = "keyhmast1@gmail.com",
+                    Subject = "Kiểm tra thử hay v dsp",
+                    Body = "<p><strong>Xin chào ngocanh.net</strong></p>"
+               };
+
+               await _sendmailservice.SendMail(content);
+               return Content("Send mail");
           }
      }
 

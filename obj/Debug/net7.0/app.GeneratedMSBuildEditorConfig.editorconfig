@@ -108,8 +108,20 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxCYW4uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/ThucTap_BTT/DMS/DMS_Code/Views/Account/ChangePass.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxDaGFuZ2VQYXNzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/ThucTap_BTT/DMS/DMS_Code/Views/Account/ForgotPass.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxGb3Jnb3RQYXNzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/ThucTap_BTT/DMS/DMS_Code/Views/Account/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/ThucTap_BTT/DMS/DMS_Code/Views/Account/NewPass.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxOZXdQYXNzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/ThucTap_BTT/DMS/DMS_Code/Views/Account/Register.cshtml]
@@ -118,6 +130,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/ThucTap_BTT/DMS/DMS_Code/Views/Account/RegisterGet.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3RlckdldC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/ThucTap_BTT/DMS/DMS_Code/Views/Account/ValidCode.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxWYWxpZENvZGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/ThucTap_BTT/DMS/DMS_Code/Views/Home/Index.cshtml]

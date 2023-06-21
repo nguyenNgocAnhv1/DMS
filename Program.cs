@@ -39,6 +39,12 @@ builder.Services.AddSession(o =>
      o.Cookie.HttpOnly = true;
      o.Cookie.IsEssential = true;
 });
+// add mail
+builder.Services.AddOptions();
+builder.Services.Configure<MailSettings> (builder.Configuration.GetSection("MailSettings"));
+builder.Services.AddTransient<ISendMailService, SendMailService>();
+
+
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
