@@ -1,0 +1,15 @@
+@model IEnumerable<App.Models.Box>
+
+@{
+    ViewData["Title"] = "Index";
+    var listBoxShare =  ViewBag.listBoxShare as List<App.Models.Box>;
+}
+
+<h5>Xin chao: @ViewBag.name</h5>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+@Html.Partial("_ShowBox",Model)
+<h5>List share</h5>
+@Html.Partial("_ShowBox",listBoxShare)

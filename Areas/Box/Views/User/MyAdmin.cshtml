@@ -1,0 +1,54 @@
+@model List<App.Models.Account>
+@{
+     var stt = 0;
+}
+<h3>Danh sách user</h3>
+<table class="table">
+     <thead>
+          <tr>
+               <th>Stt</th>
+               <th>Avt</th>
+               <th>Name(username)</th>
+               <th>List box</th>
+               <th>Phan quyen</th>
+               <th>Khoa</th>
+          </tr>
+     </thead>
+     <tbody>
+          @foreach (var item in Model)
+          {
+               stt = stt + 1;
+               <tr>
+                    <td>
+                         @stt
+                    </td>
+                    <td>
+                         <img src="/upload/avt/@item.Img" height="50" />
+                    </td>
+                    <td>
+                         <a class="" asp-controller="User" asp-action="Detail" asp-route-id = "@item.id"> 
+                              @item.Name (@item.username);
+                              
+                         </a>
+                    </td>
+                    <td>
+                         <a  class="btn btn-success" asp-controller="Box" asp-action= "Index" asp-route-userAccess= "@item.id" asp-area="Box">Danh sach cac box</a>
+                    </td>
+                    <td>
+                         <a class="btn btn-primary" asp-controller="User" asp-action="SetRole" asp-route-id="@item.id">Xet admin</a>
+                    </td>
+                    <td>
+                               <a class="btn btn-warning" asp-controller="User" asp-action="Ban" asp-route-userId="@item.id">
+                              @if (item.BanEnabled == true)
+                              {
+                                   <text>Mo khoa</text>
+                              }else{
+                                   <text>Khoa</text>
+                              }
+                         </a>
+                    </td>
+
+               </tr>
+          }
+     </tbody>
+</table>

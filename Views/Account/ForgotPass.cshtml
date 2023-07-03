@@ -1,0 +1,27 @@
+@{
+    ViewData["Title"] = "FogotPass";
+}
+@model App.Models.Account
+<h1>Quyen mat khau</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="ForgotPass">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="username" class="control-label"></label>
+                <input asp-for="username" class="form-control" />
+                <span asp-validation-for="username" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="from-group">
+                <input type="submit" value="Xac nhan" class="btn btn-primary" />
+                Back <a asp-action="Login">LOGIN</a>
+            </div>
+        </form>
+    </div>
+</div>

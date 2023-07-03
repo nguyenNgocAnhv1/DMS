@@ -1,0 +1,102 @@
+@model App.Models.Box
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Box</h4>
+<hr />
+<div class="row">
+    <div class="col-md-10">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Content" class="control-label"></label>
+                <textarea asp-for="Content" id="Content"></textarea>
+                <span asp-validation-for="Content" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Pass" class="control-label"></label>
+                <input asp-for="Pass" class="form-control" />
+                <span asp-validation-for="Pass" class="text-danger"></span>
+            </div>
+            @* <div class="form-group">
+                <label asp-for="ShareCode" class="control-label"></label>
+                <input type="button" value="Tao" id="generator">
+                <input asp-for="ShareCode" id="kq" class="form-control d-none" />
+                <span asp-validation-for="ShareCode" class="kq"></span>
+                </div> *@
+
+            @* <div class="form-group">
+                <label asp-for="Url" class="control-label"></label>
+                <input asp-for="Url" class="form-control" />
+                <span asp-validation-for="Url" class="text-danger"></span>
+                </div> *@
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsPublic" checked /> @Html.DisplayNameFor(model =>
+                    model.IsPublic)
+                </label>
+            </div>
+            <h5>Chinh sua anh dai dien cuoc hop</h5>
+            <div class="input-group mb-3">
+                <input type="file" class="form-control" id="file" name="file">
+                @* <input type="submit" value="Save" class="btn btn-primary" /> *@
+            </div>
+            @* <div class="form-group">
+                <label asp-for="UserId" class="control-label"></label>
+                <select asp-for="UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
+                </div> *@
+            <h5>Them file</h5>
+            <div class="input-group mb-3">
+                <input type="file" class="form-control" id="files" name="files" multiple>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<script>
+    $(document).ready(function () {
+        //     console.log(x);
+
+        $("#generator").click(function () {
+            $.ajax({
+                type: "GET",
+                // url: "http://localhost:5122/hcn/hcn",
+                url: "http://localhost:5274/box/sharecode",
+                contentType: "application/json; charset = utf-8",
+                success: function (data) {
+                    $("#kq").val(data.kq);
+                    $(".kq").html(data.kq);
+
+                    // $(".y").html(data.dientich);
+
+                    // $("#ketqua").html(JSON.stringify(data));
+                },
+                error: function () {
+                    alert("error");
+                },
+            });
+        })
+    });
+</script>
+@{
+    var SummerNote = new App.Models.Summernote("Content", true, 500);
+
+}
+<partial name="_Summernote" model="SummerNote" />

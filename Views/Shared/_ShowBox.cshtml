@@ -1,0 +1,75 @@
+@using System.Collections
+@model List<App.Models.Box>
+<table class="table">
+     <thead>
+          <tr>
+               <th>
+
+                    tittle
+               </th>
+
+               <th>
+
+                    pass
+               </th>
+               <th>
+                    ShareCode
+               </th>
+               <th>
+                    url
+               </th>
+               <th>
+                    IsPublic
+               </th>
+               <th>
+                    Account
+               </th>
+               <th></th>
+               <th></th>
+          </tr>
+     </thead>
+     <tbody>
+          @foreach (var item in Model)
+          {
+               <tr>
+                    <td>
+                         @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    @* <td style="max-height: 200px; max-width: 200px;">
+                         @Html.Raw(item.Content)
+                         </td> *@
+                    <td>
+                         @Html.DisplayFor(modelItem => item.Pass)
+                    </td>
+                    <td>
+                         @Html.DisplayFor(modelItem => item.ShareCode)
+                    </td>
+                    <td>
+                         @Html.DisplayFor(modelItem => item.Url)
+                    </td>
+                    <td>
+                         @Html.DisplayFor(modelItem => item.IsPublic)
+                    </td>
+                    <td>
+                         @Html.DisplayFor(modelItem => item.Account.username)
+                    </td>
+                    <td>
+                         <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
+                         <a asp-action="Details" asp-route-id="@item.id">Details</a> |
+                         <a asp-action="DeleteConfirmed" asp-route-id="@item.id" asp-route-userAccess ="@item.Account.id">Delete</a>
+                    </td>
+                    <td>
+                         @{
+                              if (item.AdminBan == true)
+                              {
+                                   @Html.Partial("_AdminBan", new ArrayList(){item.id,"Mo khoa"})
+                              }else{
+                                   @Html.Partial("_AdminBan", new ArrayList(){item.id,"Khoa ngay"})
+
+                              }
+                         }
+                    </td>
+               </tr>
+          }
+     </tbody>
+</table>

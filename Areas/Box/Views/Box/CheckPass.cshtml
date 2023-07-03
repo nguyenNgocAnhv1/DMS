@@ -1,0 +1,10 @@
+@{
+    ViewData["Title"] = "CheckPass";
+}
+<form asp-action="checkpass" method="post" asp-route-id = "@ViewBag.id">
+    <div class="form-floating">
+        <textarea class="form-control" placeholder="Leave a comment here" id="pass" name="pass"></textarea>
+        <label for="floatingTextarea">Pass</label>
+    </div>
+    <button class="btn btn-primary" type="submit" >Gửi</button>
+</form>

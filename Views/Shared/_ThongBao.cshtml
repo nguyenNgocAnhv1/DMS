@@ -1,0 +1,11 @@
+@{
+     var mess = TempData["_ThongBao"] as string ;
+}
+@if (!string.IsNullOrEmpty(mess))
+{
+  <div class="bg-warning">
+     <i>@mess</i>
+  </div>
+}
+@{
+}
