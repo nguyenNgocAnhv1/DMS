@@ -1390,3 +1390,4 @@ D:\ThucTap_BTT\DMS\DMS_Code_1\DMS_Code_1\obj\Debug\net7.0\refint\app.dll
 D:\ThucTap_BTT\DMS\DMS_Code_1\DMS_Code_1\obj\Debug\net7.0\app.pdb
 D:\ThucTap_BTT\DMS\DMS_Code_1\DMS_Code_1\obj\Debug\net7.0\app.genruntimeconfig.cache
 D:\ThucTap_BTT\DMS\DMS_Code_1\DMS_Code_1\obj\Debug\net7.0\ref\app.dll
+D:\ThucTap_BTT\DMS\DMS_Code_1\DMS_Code_1\bin\Debug\net7.0\datatest.json

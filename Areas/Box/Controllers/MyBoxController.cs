@@ -39,16 +39,11 @@ namespace App.Controllers.Boxs
                     return Json(new {kq ="false", des = "Chua login"});
                }
                var user = await _context.Accounts.FirstOrDefaultAsync(a => a.id == userAccess);
-               var appDbContext = _context.Boxs.Include(b => b.Account).Where(b => b.Account.id == userAccess).ToList();
-               var boxShare = _context.BoxShares.Include(b => b.Box).Include(b => b.Box.Account).Where(b => b.User.id == userAccess);
-               var listBoxShare = new List<Box>() { };
-               foreach (var item in boxShare)
-               {
-                    listBoxShare.Add(item.Box);
-               }
-               ViewBag.listBoxShare = listBoxShare;
+               var appDbContext = _context.Boxs.Where(b => b.UserId == userAccess).Select(b => new{b.id,b.Title,b.Pass,b.ShareCode,b.Url,b.IsPublic,b.UserId,b.DateCreated,b.View,b.Img,b.AdminBan}).ToList();
+               var boxShare = _context.BoxShares.Include(b => b.Box).Where(b => b.UserId== userAccess).Select(b => new{b.Box.id,b.Box.Title,b.Box.Pass,b.Box.ShareCode,b.Box.Url,b.Box.IsPublic,b.Box.UserId,b.Box.DateCreated,b.Box.View,b.Box.Img,b.Box.AdminBan});
+               
                ViewBag.name = user.Name;
-              return Json(new {kq ="", box = JsonConvert.SerializeObject(appDbContext), boxShare= JsonConvert.SerializeObject(boxShare) });
+              return Json(new {kq ="true", box = JsonConvert.SerializeObject(appDbContext), boxShare= JsonConvert.SerializeObject(boxShare) });
           }
 
           // GET: Box/Details/5
@@ -85,7 +80,7 @@ namespace App.Controllers.Boxs
                _context.Update(box);
                await _context.SaveChangesAsync();
                ViewBag.listFile = await _context.Files.Where(f => f.BoxId == id && f.Name != box.Img).ToListAsync();
-               ViewBag.listComment = await _context.Comments.Include(c => c.Account).Where(c => c.BoxId == id).ToListAsync();
+               ViewBag.listComment = await _context.Comments     .Include(c => c.Account).Where(c => c.BoxId == id).ToListAsync();
                ViewBag.voteStatus = 100;
                if (CurrentUser != null)
                {

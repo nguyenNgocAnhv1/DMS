@@ -257,7 +257,6 @@ namespace App.Controllers.Boxs
 
                          _context.Update(box);
 
-                         await _context.SaveChangesAsync();
                          if (file != null)
                          {
                               await UpdateFileAsync(box.id, file, oldImg);
@@ -278,6 +277,8 @@ namespace App.Controllers.Boxs
                               throw;
                          }
                     }
+                    _context.SaveChanges();
+
                }
                else
                {
@@ -706,7 +707,6 @@ namespace App.Controllers.Boxs
                if (ImgFile != null)
                {
                     _context.Files.Remove(ImgFile);
-                    _context.SaveChangesAsync();
                }
                // create folder
                string path = Path.Combine(Directory.GetCurrentDirectory(), "upload", box.Url);
@@ -741,7 +741,8 @@ namespace App.Controllers.Boxs
                };
                _context.Add(fileSql);
 
-               await _context.SaveChangesAsync();
+             await _context.SaveChangesAsync();
+
           }
 
      }
